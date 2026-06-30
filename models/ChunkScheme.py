@@ -2,7 +2,7 @@
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, func,UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, relationship
-from .Basescheme import SQLAlchemyBase
+from .BaseScheme import SQLAlchemyBase
 
 
 class ChunkRecord(SQLAlchemyBase):

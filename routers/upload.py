@@ -34,9 +34,9 @@ async def upload(request:Request,
             content={"signal": result}
         )
 
-    _ = data_controller.save(file)  
+    file_path= data_controller.save(file)  
     file_id=data_controller.file_id
-    process_controller=ProcessController(file_id=file_id)
+    process_controller=ProcessController(file_id=file_id,file_path=file_path)
     
     await file_model.create_file(
         file_id=file_id,

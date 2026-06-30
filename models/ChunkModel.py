@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from .BaseModel import BaseModel
-from .ChunkModel import ChunkRecord
+from .ChunkScheme import ChunkRecord
 
 
 class ChunkModel(BaseModel):
