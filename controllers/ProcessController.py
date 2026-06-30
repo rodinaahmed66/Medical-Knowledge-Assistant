@@ -2,12 +2,13 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from .BaseController import BaseController
 from .DataController import DataController
 from llama_cloud import LlamaCloud
+import os
 
 class ProcessController(BaseController):
     def __init__(self, file_id: str, file_path: str):   
         super().__init__()
         self.file_id = file_id
-        self.file_path = DataController().generate_file_path()                    
+        self.file_path = os.path.join(self.files_dir, self.file_id)                     
 
 
     def load_and_parse(self):

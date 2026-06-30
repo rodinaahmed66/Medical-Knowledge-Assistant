@@ -10,6 +10,12 @@ from models.ChunkModel import ChunkModel
 
 upload_router=APIRouter(prefix="/upload")
 
+
+async def get_db_session(request: Request):
+    async with request.app.db_client() as session:
+        yield session
+
+
 @upload_router.post("/file")
 async def upload(request:Request,
                 file:UploadFile,

@@ -7,8 +7,7 @@ from routers import upload
 
 app=FastAPI()
 
-@app.on_event("startup")
-async def startup_event():
+async def startup_span():
     
     settings=get_settings()
     postgres_conn=f"postgresql+asyncpg://{settings.POSTGRES_USERNAME}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_MAIN_DATABASE}"
@@ -23,5 +22,7 @@ async def shutdown_span():
 
     app.db_engine.dispose()
 
-    
+app.on_event("startup")(startup_span)
+app.on_event("shutdown")(shutdown_span)
+
 app.include_router(upload.upload_router)
