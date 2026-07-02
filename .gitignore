@@ -1,1 +1,15 @@
-data
+# Ignore git history
+.git
+.gitignore
+
+# Ignore local data (Docker uses Volumes instead)
+data/
+storage/
+
+# Ignore Python cache
+__pycache__
+*.pyc
+
+# Ignore environment files
+.env
+.venv
