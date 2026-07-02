@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from .BaseModel import BaseModel
-from .ChunkScheme import ChunkRecord
+from .schemes.ChunkScheme import ChunkRecord
 
 
 class ChunkModel(BaseModel):
@@ -13,7 +13,8 @@ class ChunkModel(BaseModel):
         chunk_records = [
             ChunkRecord(
                 chunk_file_id=file_id,
-                chunk_text=chunk,
+                chunk_text=chunk.page_content,
+                chunk_metadata =chunk.metadata,
                 chunk_order=i+1,
             )
             for i, chunk in enumerate(chunks)

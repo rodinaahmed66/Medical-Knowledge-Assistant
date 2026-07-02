@@ -1,34 +1,40 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from .BaseController import BaseController
 from .DataController import DataController
-from llama_cloud import LlamaCloud
+from config.help import get_settings 
+from llama_parse import LlamaParse
 import os
 
 class ProcessController(BaseController):
     def __init__(self, file_id: str, file_path: str):   
         super().__init__()
         self.file_id = file_id
-        self.file_path = os.path.join(self.files_dir, self.file_id)                     
+        self.file_path = file_path
+
+        self.app_settings = get_settings()                    
 
 
-    def load_and_parse(self):
-        client = LlamaCloud()
-        file = client.files.create(file=self.file_path, purpose="parse")
-        result = client.parsing.parse(
-            file_id=file.id,                            
-            tier="agentic",
-            version="latest",
-            expand=["markdown_full"],
-        )
-        return result.markdown_full
+    async def load_and_parse(self):
+        parser=LlamaParse(    
+        api_key=self.app_settings.LLAMA_CLOUD_API_KEY,
+        result_type='markdown',  
+        language="en",
+        verbose=True)
+        
+        documents= await parser.aload_data(self.file_path)
+        docs=[doc.text for doc in documents]
+        metadata=[doc.metadata for doc in documents]
+        return  docs,metadata
 
 
-    def chunk_it(self, chunk_size: int, overlap_size: int):
-        file_content = self.load_and_parse()
+    async def chunk_it(self, chunk_size: int, overlap_size: int):
+
+        file_content,metadata = await self.aload_and_parse()
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=overlap_size,
             length_function=len,
         )
-        documents=splitter.create_documents([file_content])
-        return [doc.page_content for doc in documents]
+        documents=splitter.create_documents(file_content,metadata)
+
+        return documents

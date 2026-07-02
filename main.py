@@ -20,7 +20,7 @@ async def startup_span():
 
 async def shutdown_span():
 
-    app.db_engine.dispose()
+    await app.db_engine.dispose()
 
 app.on_event("startup")(startup_span)
 app.on_event("shutdown")(shutdown_span)

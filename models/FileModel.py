@@ -1,7 +1,7 @@
 
 from sqlalchemy import select
 from .BaseModel import BaseModel
-from .FileScheme import FileRecord
+from .schemes.FileScheme import FileRecord
 
 
 class FileModel(BaseModel):

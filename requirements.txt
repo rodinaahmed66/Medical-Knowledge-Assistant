@@ -18,7 +18,7 @@ langchain-openai>=0.0.8
 langchain-text-splitters>=0.0.1  
 
 
-llama-cloud>=1.0.0              
+llama-parse             
 
 pydantic>=2.0.0
 pydantic-settings>=2.0.0         

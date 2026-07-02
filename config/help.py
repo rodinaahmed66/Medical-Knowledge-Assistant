@@ -15,6 +15,8 @@ class settings(BaseSettings):
     POSTGRES_HOST:str
     POSTGRES_PORT:int
     POSTGRES_MAIN_DATABASE:str 
+    
+    LLAMA_CLOUD_API_KEY:str
 
     model_config = SettingsConfigDict(env_file=".env")
 

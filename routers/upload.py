@@ -1,4 +1,5 @@
 from fastapi import APIRouter,Depends,UploadFile,status,Request
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse
 from models import ProcessSignal
 from controllers import DataController
@@ -19,14 +20,15 @@ async def get_db_session(request: Request):
 @upload_router.post("/file")
 async def upload(request:Request,
                 file:UploadFile,
-                app_settings:settings=Depends(get_settings)):
+                app_settings:settings=Depends(get_settings),
+                 db_session: AsyncSession = Depends(get_db_session)):
 
     file_model=await FileModel.create_instance(
-          db_client=request.app.db_client
+          db_client= db_session
     )
 
     chunk_model=await ChunkModel.create_instance(
-          db_client=request.app.db_client
+          db_client= db_session
     )
 
 
@@ -42,7 +44,7 @@ async def upload(request:Request,
 
     file_path= data_controller.save(file)  
     file_id=data_controller.file_id
-    process_controller=ProcessController(file_id=file_id,file_path=file_path)
+    process_controller=await ProcessController(file_id=file_id,file_path=file_path)
     
     await file_model.create_file(
         file_id=file_id,
@@ -57,6 +59,7 @@ async def upload(request:Request,
     await chunk_model.insert_chunks(
         file_id=file_id,
         chunks=chunks,
+
     )
 
 

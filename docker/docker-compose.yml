@@ -8,7 +8,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=medical files
+      - POSTGRES_DB=medical_files
     networks:
       - backend
     restart: always 
