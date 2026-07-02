@@ -11,9 +11,13 @@ class DataController(BaseController):
     def __init__(self):
         super().__init__()
         self.size_scale=1048576
-        self.file_id=str(uuid.uuid4())
+        self.file_id=None
         
-    
+    def generate_file_id(self, filename: str) -> str:
+        namespace = uuid.NAMESPACE_DNS  
+        self.file_id=str(uuid.uuid5(namespace, filename))
+        return self.file_id
+
     def data_validate(self,file:UploadFile):
         
         if file.content_type not in self.app_setting.FILE_ALLOWED_TYPES:

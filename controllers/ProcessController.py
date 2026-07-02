@@ -18,7 +18,7 @@ class ProcessController(BaseController):
         parser=LlamaParse(    
         api_key=self.app_settings.LLAMA_CLOUD_API_KEY,
         result_type='markdown',  
-        language="en",
+        language=self.app_settings.DEFAULT_LANG,
         verbose=True)
         
         documents= await parser.aload_data(self.file_path)
@@ -29,7 +29,7 @@ class ProcessController(BaseController):
 
     async def chunk_it(self, chunk_size: int, overlap_size: int):
 
-        file_content,metadata = await self.aload_and_parse()
+        file_content,metadata = await self.load_and_parse()
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=overlap_size,

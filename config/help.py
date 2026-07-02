@@ -18,8 +18,10 @@ class settings(BaseSettings):
     
     LLAMA_CLOUD_API_KEY:str
 
-    model_config = SettingsConfigDict(env_file=".env")
+    DEFAULT_LANG:str
+    PRIMARY_LAN:str
 
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 def get_settings():

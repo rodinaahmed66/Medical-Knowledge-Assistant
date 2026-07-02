@@ -23,6 +23,7 @@ async def upload(request:Request,
                 app_settings:settings=Depends(get_settings),
                  db_session: AsyncSession = Depends(get_db_session)):
 
+
     file_model=await FileModel.create_instance(
           db_client= db_session
     )
@@ -31,9 +32,8 @@ async def upload(request:Request,
           db_client= db_session
     )
 
-
-
     data_controller = DataController()
+    file_id=data_controller.generate_file_id(file.filename)
     is_valid, result = data_controller.data_validate(file)
 
     if not is_valid:
@@ -43,29 +43,49 @@ async def upload(request:Request,
         )
 
     file_path= data_controller.save(file)  
-    file_id=data_controller.file_id
-    process_controller=await ProcessController(file_id=file_id,file_path=file_path)
+    process_controller=ProcessController(file_id=file_id,file_path=file_path)
     
+    if await file_model.file_exists(file_id):
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content={"signal": "file already exist"}
+        )
+
     await file_model.create_file(
         file_id=file_id,
         filename=file.filename,
         file_type=file.content_type
     )
-    chunks=process_controller.chunk_it(
-        chunk_size=app_settings.CHUNK_SIZE,
-        overlap_size=app_settings.OVERLAP_SIZE
-    )
+
+    try:
+        chunks=await process_controller.chunk_it(
+            chunk_size=app_settings.CHUNK_SIZE,
+            overlap_size=app_settings.OVERLAP_SIZE
+        )
+        print(chunks[0])
+        if not chunks:
+            return JSONResponse(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                content={"signal": ProcessSignal.NO_CHUNKS_PRODUCED.value, "file_id": file_id}
+            )
     
-    await chunk_model.insert_chunks(
-        file_id=file_id,
-        chunks=chunks,
-
+    except Exception as e:
+        
+        return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"signal": ProcessSignal.PARSE_FAILED.value, "error": str(e)}
     )
 
+    await chunk_model.insert_chunks(
+            file_id=file_id,
+            chunks=chunks,
+        )
 
     return JSONResponse(content={
-        "signal": result,
-        "file_id": data_controller.file_id,
+        "signal": ProcessSignal.PROCESS_SUCCESS.value,
+        "file_id": file_id,
+        "chunks_parsed": len(chunks),
+        #"chunks_inserted": len(inserted),
     })
 
     

@@ -7,3 +7,9 @@ class ProcessSignal(Enum):
     FILE_SIZE_EXCEEDED = "file_size_exceeded"
     FILE_UPLOAD_SUCCESS = "file_upload_success"
     FILE_UPLOAD_FAILED = "file_upload_failed"
+
+    FILE_RECORD_CREATE_FAILED = "file_record_create_failed"
+    PARSE_FAILED = "parse_failed"
+    NO_CHUNKS_PRODUCED = "no_chunks_produced"
+    CHUNKS_INSERT_FAILED = "chunks_insert_failed"
+    PROCESS_SUCCESS = "process_success"
