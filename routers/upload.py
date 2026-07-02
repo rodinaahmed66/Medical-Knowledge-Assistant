@@ -62,7 +62,6 @@ async def upload(request:Request,
             chunk_size=app_settings.CHUNK_SIZE,
             overlap_size=app_settings.OVERLAP_SIZE
         )
-        print(chunks[0])
         if not chunks:
             return JSONResponse(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
