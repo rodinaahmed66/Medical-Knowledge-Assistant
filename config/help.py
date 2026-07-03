@@ -32,7 +32,7 @@ class settings(BaseSettings):
 
     INPUT_DEFAULT_MAX_CHARACTERS:int
     GENERATION_DEFAULT_MAX_TOKENS:int
-    GENERATION_DEFAULT_TEMPERATURE:int
+    GENERATION_DEFAULT_TEMPERATURE:float
 
 
     model_config = SettingsConfigDict(env_file=".env")
