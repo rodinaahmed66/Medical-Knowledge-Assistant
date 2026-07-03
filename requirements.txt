@@ -1,15 +1,12 @@
-
 fastapi>=0.110.0
 uvicorn>=0.28.0
 python-multipart>=0.0.9         
 
-
 SQLAlchemy>=2.0.0
 asyncpg>=0.29.0                 
-
+psycopg2-binary>=2.9.0        
 
 qdrant-client>=1.8.0             
-
 
 langchain>=0.1.0
 langchain-core>=0.1.0
@@ -17,8 +14,9 @@ langchain-community>=0.0.10
 langchain-openai>=0.0.8          
 langchain-text-splitters>=0.0.1  
 
-
 llama-parse             
 
 pydantic>=2.0.0
 pydantic-settings>=2.0.0         
+
+alembic>=1.13.0                

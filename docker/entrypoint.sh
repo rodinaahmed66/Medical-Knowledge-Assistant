@@ -2,8 +2,8 @@
 set -e
 
 echo "Running database migrations..."
-cd /models
+cd /app/models
 alembic upgrade head
-cd .
+cd /app
 
 exec "$@"

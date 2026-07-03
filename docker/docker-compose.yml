@@ -1,4 +1,28 @@
 services:
+  fastapi:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - fastapi_data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway" 
+    networks:
+      - backend
+    restart: always
+    
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama: 
+        condition: service_healthy
+    env_file:
+      - ./env/.env.app
+
+
 
   postgres:
     image: postgres:17
@@ -13,6 +37,12 @@ services:
     networks:
       - backend
     restart: always 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   qdrant:
     image: qdrant/qdrant:latest
@@ -25,10 +55,49 @@ services:
     networks:
       - backend
     restart: always
+  
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_NUM_THREADS=4
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - backend
+    restart: always
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        ollama serve &
+        
+        until ollama list >/dev/null 2>&1; do 
+          sleep 1
+        done
+        
+        echo "=== Pulling qwen2.5:3b ==="
+        ollama pull qwen2.5:3b
+        
+        echo "=== Pulling nomic-embed-text ==="
+        ollama pull nomic-embed-text
+        
+        wait
+    
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list | grep -q 'qwen2.5' && ollama list | grep -q 'nomic-embed-text'"]
+      interval: 10s       
+      timeout: 5s       
+      retries: 60       
+      start_period: 10s 
 
 networks:
   backend:
 
 volumes:
+  fastapi_data:
   postgres_data:
   qdrant_data:
+  ollama_data:
