@@ -10,7 +10,7 @@ class Vector_DB_Model:
         self.client = None
 
     def connect(self):
-        self.client = QdrantClient(host=self.settings.QDRANT_DB_PATH)
+        self.client = QdrantClient(url=self.settings.QDRANT_DB_PATH)
     
     def disconnect(self):
         self.client = None

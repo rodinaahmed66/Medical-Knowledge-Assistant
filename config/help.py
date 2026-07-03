@@ -36,7 +36,7 @@ class settings(BaseSettings):
 
     QDRANT_DB_METHOD:str
     QDRANT_DB_PATH:str
-    QDRANTector_DB_METHOD:str
+
 
 
     model_config = SettingsConfigDict(env_file=".env")

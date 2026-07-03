@@ -84,7 +84,7 @@ async def upload(request:Request,
 
     texts=[chunk.page_content for chunk in chunks]
     metadata=[chunk.metadata if chunk.metadata else {} for chunk in chunks]
-    ids=[i+1 for i in  len(chunks)]
+    ids=[i+1 for i in range(len(chunks))]
     vectors=[]
     for text in texts:
         _=request.app.llm_service.embed_text(
