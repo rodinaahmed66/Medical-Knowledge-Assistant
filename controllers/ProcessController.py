@@ -35,6 +35,7 @@ class ProcessController(BaseController):
             chunk_overlap=overlap_size,
             length_function=len,
         )
+        
         documents=splitter.create_documents(file_content,metadata)
 
         return documents

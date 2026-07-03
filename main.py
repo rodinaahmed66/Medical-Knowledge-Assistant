@@ -1,7 +1,9 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from services.LLMServices import OpenAIProvider
+from models.Vector_DB_Model import Vector_DB_Model
 from sqlalchemy.orm import sessionmaker
-from fastapi import FastAPI
 from config.help import get_settings
+from fastapi import FastAPI
 from routers import upload
 
 
@@ -16,11 +18,36 @@ async def startup_span():
     app.db_client = sessionmaker(
         app.db_engine, class_=AsyncSession, expire_on_commit=False
     )
+    app.llm_service=OpenAIProvider(
+                api_key=settings.OPENAI_KEY,
+                base_url=settings.OPENAI_URL,
+                default_input_max_characters=settings.INPUT_DEFAULT_MAX_CHARACTERS,
+                default_generation_output_tokens=settings.GENERATION_DEFAULT_MAX_TOKENS ,
+                default_generation_temperature=settings.GENERATION_DEFAULT_TEMPERATURE
+                )
+    
+    app.llm_service.set_generation_model(
+        model_id=settings.GENERATION_MODEL_ID
+    )
+
+    app.llm_service.set_embedding_model(
+        model_id=settings.EMBEDDING_MODEL_ID,
+        embedding_size=settings.EMBEDDING_MODEL_SIZE
+    )
+    
+    app.vector_db=Vector_DB_Model(
+        url=settings.QDRANT_DB_PATH
+    )
+    
+    app.vector_db.connect()
+
     print("Application startup.")
 
-async def shutdown_span():
 
+async def shutdown_span():
+    await app.vector_db.disconnect()
     await app.db_engine.dispose()
+
 
 app.on_event("startup")(startup_span)
 app.on_event("shutdown")(shutdown_span)

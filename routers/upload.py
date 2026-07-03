@@ -1,12 +1,14 @@
 from fastapi import APIRouter,Depends,UploadFile,status,Request
+from models.Vector_DB_Model import Vector_DB_Model
 from sqlalchemy.ext.asyncio import AsyncSession
+from services.LLMServices import OpenAIProvider
 from fastapi.responses import JSONResponse
-from models import ProcessSignal
 from controllers import DataController
 from controllers import ProcessController
 from config.help import get_settings,settings
 from models.FileModel import FileModel
 from models.ChunkModel import ChunkModel
+from models import ProcessSignal
 
 
 upload_router=APIRouter(prefix="/upload")
@@ -80,11 +82,36 @@ async def upload(request:Request,
             chunks=chunks,
         )
 
+    texts=[chunk.page_content for chunk in chunks]
+    metadata=[chunk.metadata if chunk.metadata else {} for chunk in chunks]
+    ids=[i+1 for i in  len(chunks)]
+    vectors=[]
+    for text in texts:
+        _=request.app.llm_service.embed_text(
+            text
+        )
+        vectors.extend(_)
+
+    try:
+        request.app.vector_db.insert(
+                collection_name="medical_chunks",
+                texts=texts,
+                vectors=vectors,
+                metadata=metadata,
+                record_ids=ids
+        )
+
+    except Exception as qdrant_error:
+        print(f"Error during Qdrant ingestion: {str(qdrant_error)}")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"signal": "VECTORS_INDEX_FAILED", "error": str(qdrant_error)}
+        )
+
     return JSONResponse(content={
         "signal": ProcessSignal.PROCESS_SUCCESS.value,
         "file_id": file_id,
         "chunks_parsed": len(chunks),
-        #"chunks_inserted": len(inserted),
     })
 
     
