@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from config.help import get_settings
 from fastapi import FastAPI
 from routers import upload
-
+from routers import chat
 
 app=FastAPI()
 
@@ -40,7 +40,7 @@ async def startup_span():
     )
     
     app.vector_db.connect()
-
+    await app.vector_db.create_collection(collection_name=settings.QDRANT_COLLECTION_NAME)
     print("Application startup.")
 
 
@@ -53,3 +53,4 @@ app.on_event("startup")(startup_span)
 app.on_event("shutdown")(shutdown_span)
 
 app.include_router(upload.upload_router)
+app.include_router(chat.chat_router)

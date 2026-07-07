@@ -90,11 +90,11 @@ async def upload(request:Request,
         _=request.app.llm_service.embed_text(
             text
         )
-        vectors.extend(_)
+        vectors.append(_)
 
     try:
         request.app.vector_db.insert(
-                collection_name="medical_chunks",
+                collection_name=app_settings.QDRANT_COLLECTION_NAME,
                 texts=texts,
                 vectors=vectors,
                 metadata=metadata,

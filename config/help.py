@@ -25,6 +25,8 @@ class settings(BaseSettings):
     OPENAI_KEY:str
     OPENAI_URL:str
 
+    
+    CHAT_MODEL_ID:str
     GENERATION_MODEL_ID:str
     EMBEDDING_MODEL_ID:str
     EMBEDDING_MODEL_SIZE:int
@@ -36,8 +38,9 @@ class settings(BaseSettings):
 
     QDRANT_DB_METHOD:str
     QDRANT_DB_PATH:str
+    QDRANT_COLLECTION_NAME:str
 
-
+    TAVILY_KEY:str
 
     model_config = SettingsConfigDict(env_file=".env")
 
