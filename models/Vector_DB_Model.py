@@ -1,13 +1,15 @@
-
-import uuid
+from fastembed import SparseTextEmbedding
 from qdrant_client import models, QdrantClient
-from config.help import get_settings 
+from fastembed import SparseTextEmbedding
+from qdrant_client.models import Fusion, FusionQuery
+from config.help import get_settings
 
 
 class Vector_DB_Model:
     def __init__(self, url: str = None):
         self.settings = get_settings()
         self.client = None
+        self.sparse_embedding_model = SparseTextEmbedding(model_name="Qdrant/bm25")
 
     def connect(self):
         self.client = QdrantClient(url=self.settings.QDRANT_DB_PATH)
@@ -27,10 +29,16 @@ class Vector_DB_Model:
             
             self.client.create_collection(
                 collection_name=collection_name,
-                vectors_config=models.VectorParams(
+                vectors_config={
+                    "dense":
+                    models.VectorParams(
                     size=self.settings.EMBEDDING_MODEL_SIZE,               
                     distance=self.settings.QDRANT_DB_METHOD
-                )
+                )},
+                sparse_vectors_config={
+                "sparse":
+                models.SparseVectorParams()
+                }
             )
 
     def insert(self, collection_name: str,
@@ -40,19 +48,26 @@ class Vector_DB_Model:
                record_ids: list = None,
                batch_size: int = 50):
         
-        
+        sparse_vectors = list(self.sparse_embedding_model.embed(texts))
+
         for i in range(0, len(texts), batch_size):
             
             batch_end = i + batch_size
             batch_texts = texts[i:batch_end]
             batch_vectors = vectors[i:batch_end]
+            batch_sparse = sparse_vectors[i:batch_end]
             batch_metadata = metadata[i:batch_end]
             batch_record_ids = record_ids[i:batch_end]
 
             batch_records = [
                 models.Record(
                     id=batch_record_ids[x],
-                    vector=batch_vectors[x],
+                    vector= {
+                        "dense": batch_vectors[x],
+                        "sparse": models.SparseVector(
+                            indices=batch_sparse[x].indices.tolist(),
+                            values=batch_sparse[x].values.tolist()
+                        )},
                     payload={
                         "text": batch_texts[x],
                         "metadata": batch_metadata[x]
@@ -70,14 +85,50 @@ class Vector_DB_Model:
 
         return True
     
+    
 
-    def search(self, collection_name: str, query_vector: list, limit: int = 5):
+    def semantic_search(self, collection_name: str, query_vector: list, limit: int = 5):
         if not self.client:
+            
             raise RuntimeError("Database client is not connected. Call connect() first.")
         
         results = self.client.search(
             collection_name=collection_name,
-            query_vector=query_vector,
+            query_vector=models.NamedVector(
+                name="dense",
+                vector=query_vector
+            ),
             limit=limit
         )
         return results
+    
+
+    def hybrid_search(self, collection_name: str, query: str, query_vector: list, limit: int = 5):
+        """Combines dense semantic and sparse keyword searches using RRF."""
+        if not self.client:
+            raise RuntimeError("Database client is not connected.")
+        
+        query_sparse_raw = list(self.sparse_embedding_model.embed([query]))[0]
+        query_sparse_vector = models.SparseVector(
+            indices=query_sparse_raw.indices.tolist(),
+            values=query_sparse_raw.values.tolist()
+        )
+
+        results = self.client.query_points(
+            collection_name=collection_name,
+            prefetch=[
+                models.Prefetch(
+                    query=query_vector,
+                    using="dense",
+                    limit=limit * 3
+                ),
+                models.Prefetch(
+                    query=query_sparse_vector,
+                    using="sparse",
+                    limit=limit * 3
+                )
+            ],
+            query=models.FusionQuery(fusion=models.Fusion.RRF),
+            limit=limit
+        )
+        return results.points

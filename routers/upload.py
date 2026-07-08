@@ -77,14 +77,14 @@ async def upload(request:Request,
         content={"signal": ProcessSignal.PARSE_FAILED.value, "error": str(e)}
     )
 
-    await chunk_model.insert_chunks(
+    chunk_records=await chunk_model.insert_chunks(
             file_id=file_id,
             chunks=chunks,
         )
 
     texts=[chunk.page_content for chunk in chunks]
     metadata=[chunk.metadata if chunk.metadata else {} for chunk in chunks]
-    ids=[i+1 for i in range(len(chunks))]
+    ids=[record.chunk_id for record in chunk_records]
     vectors=[]
     for text in texts:
         _=request.app.llm_service.embed_text(

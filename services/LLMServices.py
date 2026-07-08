@@ -84,7 +84,7 @@ class OpenAIProvider():
          return{
               "role":role,
               "content":prompt
-         }
+            }
     
     def process_text(self,text:str):
          return text[:self.default_input_max_characters].strip()
