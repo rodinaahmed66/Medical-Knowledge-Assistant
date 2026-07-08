@@ -1,14 +1,13 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from config.help import get_settings
-from sqlalchemy import select
-from services.LLMServices import OpenAIProvider
-from models.schemes.ChunkScheme import ChunkRecord
 import asyncio
 import json
+import os
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 
-
-
+from config.help import get_settings
+from services.LLMServices import OpenAIProvider
+from models.schemes.ChunkScheme import ChunkRecord
 
 settings = get_settings()
 
@@ -43,9 +42,15 @@ async def build_eval_set(sample_size: int = None):
         result = await session.execute(select(ChunkRecord))
         chunks = result.scalars().all()
 
+        if not chunks:
+            print("No chunks found in database. Please upload files first.")
+            await engine.dispose()
+            return
+
         if sample_size:
             chunks = chunks[:sample_size]
 
+        print(f"Generating questions for {len(chunks)} chunks...")
         for chunk in chunks:
             question = llm_service.generate_text(
                 prompt=QUERY_GEN_PROMPT.format(chunk_text=chunk.chunk_text),
@@ -59,11 +64,15 @@ async def build_eval_set(sample_size: int = None):
                 "relevant_ids": [chunk.chunk_id],
             })
 
-    with open("eval_set.json", "w") as f:
+
+    os.makedirs("eval_output", exist_ok=True)
+    output_path = "eval_output/eval_set.json"
+    
+    with open(output_path, "w") as f:
         json.dump(eval_set, f, indent=2)
 
     await engine.dispose()
-    print(f"Generated {len(eval_set)} eval examples -> eval_set.json")
+    print(f"Generated {len(eval_set)} evaluation examples -> {output_path}")
 
 
 if __name__ == "__main__":
