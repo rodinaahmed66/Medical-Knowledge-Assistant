@@ -45,7 +45,7 @@ async def startup_span():
 
 
 async def shutdown_span():
-    await app.vector_db.disconnect()
+    app.vector_db.disconnect()
     await app.db_engine.dispose()
 
 

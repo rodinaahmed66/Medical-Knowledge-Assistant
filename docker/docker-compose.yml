@@ -99,7 +99,7 @@ services:
         wait
     
     healthcheck:
-      test:  ["CMD-SHELL", "ollama list | grep -q 'llama3.1' && ollama list | grep -q 'mxbai-embed-large'"]
+      test: ["CMD-SHELL", "ollama list | grep -q 'llama3.2' && ollama list | grep -q 'medgemma' && ollama list | grep -q 'mxbai-embed-large'"]
       interval: 10s       
       timeout: 5s       
       retries: 60       
