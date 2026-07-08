@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import random 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -48,7 +49,7 @@ async def build_eval_set(sample_size: int = None):
             return
 
         if sample_size:
-            chunks = chunks[:sample_size]
+            chunks = random.sample(chunks, sample_size,seed=42)
 
         print(f"Generating questions for {len(chunks)} chunks...")
         for chunk in chunks:

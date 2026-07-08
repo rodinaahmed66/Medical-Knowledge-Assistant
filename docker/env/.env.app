@@ -24,7 +24,7 @@ OPENAI_KEY="vbgntymyu"
 OPENAI_URL="http://ollama:11434/v1/"
 
 
-CHAT_MODEL_ID="llama3.1:8b"
+CHAT_MODEL_ID="llama3.2:3b"
 GENERATION_MODEL_ID="medgemma:4b"
 EMBEDDING_MODEL_ID= "mxbai-embed-large"
 EMBEDDING_MODEL_SIZE=1024

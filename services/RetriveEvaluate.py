@@ -28,7 +28,7 @@ def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, llm_service: OpenAIP
         if not relevant_ids:
             continue
 
-        hit_count = len(retrieved_ids & relevant_ids)
+        hit_count = 1 if retrieved_ids & relevant_ids else 0 
         score = hit_count / len(relevant_ids)
         recalls.append(score)
 
