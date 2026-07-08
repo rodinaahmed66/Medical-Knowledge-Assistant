@@ -62,7 +62,7 @@ class OpenAIProvider():
             
             return response.choices[0].message.content
             
-    def embed_text(self,text:str,document_type:str=None):
+    def embed_text(self,texts: str | list[str],document_type:str=None)->list[float] | list[list[float]] | None:
 
             if not self.client:
                 self.logger.error("OpenAI client was not set")
@@ -70,15 +70,29 @@ class OpenAIProvider():
             
             if not self.embedding_model_id:
                 self.logger.error("Embedding model for OpenAI client was not set")
-                return None                
-            response=self.client.embeddings.create(
-                model=self.embedding_model_id,
-                input=text
-            )
-            if not response or not response.data or len(response.data)==0 or not response.data[0].embedding:
-                self.logger.error("Error while embedding text with OpenAI")
+                return None   
+
+            try:    
+                is_single = isinstance(texts, str)
+                response=self.client.embeddings.create(
+                    model=self.embedding_model_id,
+                    input=texts
+                )
+
+                if not response or not response.data:
+                    self.logger.error("Error while embedding texts with OpenAI")
+                    return None
+
+                if is_single:
+                    return response.data[0].embedding
+                else:
+                    sorted_data = sorted(response.data, key=lambda x: x.index)
+                    return [item.embedding for item in sorted_data]
+ 
+            except Exception as e:
+                self.logger.error(f"Failed to generate batch embeddings: {e}")
                 return None
-            return response.data[0].embedding
+
     
     def construct_prompt(self,prompt:str,role:str):
          return{

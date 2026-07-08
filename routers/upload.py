@@ -9,7 +9,7 @@ from config.help import get_settings,settings
 from models.FileModel import FileModel
 from models.ChunkModel import ChunkModel
 from models import ProcessSignal
-
+import asyncio
 
 upload_router=APIRouter(prefix="/upload")
 
@@ -85,13 +85,17 @@ async def upload(request:Request,
     texts=[chunk.page_content for chunk in chunks]
     metadata=[chunk.metadata if chunk.metadata else {} for chunk in chunks]
     ids=[record.chunk_id for record in chunk_records]
-    vectors=[]
-    for text in texts:
-        _=request.app.llm_service.embed_text(
-            text
+    vectors = await asyncio.to_thread(
+            request.app.llm_service.embed_text, 
+            texts
         )
-        vectors.append(_)
 
+    if not vectors:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"signal": "VECTORS_INDEX_FAILED", "error": "Embedding model failed to process batch."}
+        )
+        
     try:
         request.app.vector_db.insert(
                 collection_name=app_settings.QDRANT_COLLECTION_NAME,
