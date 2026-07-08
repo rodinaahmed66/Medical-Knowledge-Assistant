@@ -9,10 +9,10 @@ def get_agent_tools(llm_service, vector_db):
     def vector_search(query: str, limit: int = 3):
         """Search the internal medical knowledge base for relevant document chunks."""
         vector_query = llm_service.embed_text(query)
-        results = vector_db.search(
+        results = vector_db.semantic_search(
             collection_name=get_settings().QDRANT_COLLECTION_NAME,
             query_vector=vector_query,
-            limit=Chat_Request.limit
+            limit=limit
         )
 
         if not results:

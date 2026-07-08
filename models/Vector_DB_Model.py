@@ -17,7 +17,7 @@ class Vector_DB_Model:
     def disconnect(self):
         self.client = None
 
-    async def create_collection(self, collection_name: str):
+    def create_collection(self, collection_name: str):
         if not self.client:
             raise RuntimeError("Database client is not connected. Call connect() first.")
 
