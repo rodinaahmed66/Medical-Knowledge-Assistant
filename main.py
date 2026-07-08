@@ -40,7 +40,6 @@ async def startup_span():
     )
     
     app.vector_db.connect()
-    app.vector_db.create_collection(collection_name=settings.QDRANT_COLLECTION_NAME)
     print("Application startup.")
 
 
