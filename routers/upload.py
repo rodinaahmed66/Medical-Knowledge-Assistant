@@ -53,17 +53,12 @@ async def upload(request:Request,
             content={"signal": "file already exist"}
         )
 
-    await file_model.create_file(
-        file_id=file_id,
-        filename=file.filename,
-        file_type=file.content_type
-    )
-
     try:
         chunks=await process_controller.chunk_it(
             chunk_size=app_settings.CHUNK_SIZE,
             overlap_size=app_settings.OVERLAP_SIZE
         )
+
         if not chunks:
             return JSONResponse(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -76,6 +71,14 @@ async def upload(request:Request,
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"signal": ProcessSignal.PARSE_FAILED.value, "error": str(e)}
     )
+    
+    await file_model.create_file(
+        file_id=file_id,
+        filename=file.filename,
+        file_type=file.content_type
+    )
+
+
 
     chunk_records=await chunk_model.insert_chunks(
             file_id=file_id,
@@ -97,13 +100,15 @@ async def upload(request:Request,
         )
         
     try:
-        request.app.vector_db.insert(
+    
+        await request.app.vector_db.insert(
                 collection_name=app_settings.QDRANT_COLLECTION_NAME,
                 texts=texts,
                 vectors=vectors,
                 metadata=metadata,
                 record_ids=ids
         )
+        
 
     except Exception as qdrant_error:
         print(f"Error during Qdrant ingestion: {str(qdrant_error)}")

@@ -1,5 +1,5 @@
 from fastembed import SparseTextEmbedding
-from qdrant_client import models, QdrantClient
+from qdrant_client import models, AsyncQdrantClient
 from fastembed import SparseTextEmbedding
 from qdrant_client.models import Fusion, FusionQuery
 from config.help import get_settings
@@ -12,22 +12,24 @@ class Vector_DB_Model:
         #self.sparse_embedding_model = SparseTextEmbedding(model_name="Qdrant/bm25")
 
     def connect(self):
-        self.client = QdrantClient(url=self.settings.QDRANT_DB_PATH)
+        self.client = AsyncQdrantClient(url=self.settings.QDRANT_DB_PATH,timeout=30)
     
-    def disconnect(self):
+    async def disconnect(self):
+        if self.client:
+            await self.client.close()
         self.client = None
 
-    def create_collection(self, collection_name: str):
+    async def create_collection(self, collection_name: str):
         if not self.client:
             raise RuntimeError("Database client is not connected. Call connect() first.")
 
         
-        collections = self.client.get_collections().collections
+        collections = (await self.client.get_collections()).collections
         exists = any(c.name == collection_name for c in collections)
 
         if not exists:
             
-            self.client.create_collection(
+            await self.client.create_collection(
                 collection_name=collection_name,
                 vectors_config={
                     "dense":
@@ -41,7 +43,7 @@ class Vector_DB_Model:
                 }
             )
 
-    def insert(self, collection_name: str,
+    async def insert(self, collection_name: str,
                texts: list,
                vectors: list,
                metadata: list = None,
@@ -79,7 +81,7 @@ class Vector_DB_Model:
             ]
 
 
-            self.client.upload_records(
+            await self.client.upload_records(
                 collection_name=collection_name,
                 records=batch_records
             )
@@ -88,12 +90,12 @@ class Vector_DB_Model:
     
     
 
-    def semantic_search(self, collection_name: str, query_vector: list, limit: int = 5):
+    async def semantic_search(self, collection_name: str, query_vector: list, limit: int = 5):
         if not self.client:
             
             raise RuntimeError("Database client is not connected. Call connect() first.")
         
-        results = self.client.search(
+        results = await self.client.search(
             collection_name=collection_name,
             query_vector=models.NamedVector(
                 name="dense",
