@@ -62,7 +62,7 @@ class Vector_DB_Model:
             batch_record_ids = record_ids[i:batch_end]
 
             batch_records = [
-                models.Record(
+                models.PointStruct(
                     id=batch_record_ids[x],
                     vector= {
                         "dense": batch_vectors[x],
@@ -81,7 +81,7 @@ class Vector_DB_Model:
             ]
 
 
-            await self.client.upload_records(
+            await self.client.upsert(
                 collection_name=collection_name,
                 records=batch_records
             )

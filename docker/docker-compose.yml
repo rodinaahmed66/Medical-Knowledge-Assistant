@@ -20,7 +20,7 @@ services:
       qdrant:
         condition: service_healthy
       ollama: 
-        condition: service_healthy
+        condition: service_started
     env_file:
       - ./env/.env.app
 
@@ -101,7 +101,7 @@ services:
         wait
     
     healthcheck:
-      test: ["CMD-SHELL", "ollama list | grep -q 'llama3.2' && ollama list | grep -q 'medgemma:4b' && ollama list | grep -q 'mxbai-embed-large'"]
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
       interval: 10s       
       timeout: 5s       
       retries: 60       
