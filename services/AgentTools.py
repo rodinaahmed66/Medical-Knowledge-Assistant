@@ -6,7 +6,7 @@ from config.help import get_settings
 def get_agent_tools(llm_service, vector_db):
 
     @tool
-    def vector_search(query: str, limit: int = 3):
+    async def vector_search(query: str, limit: int = 3):
         """Search the internal medical knowledge base for relevant document chunks."""
         vector_query = llm_service.embed_text(query)
         results = await vector_db.semantic_search(
@@ -24,7 +24,7 @@ def get_agent_tools(llm_service, vector_db):
     def web_tool(query: str, limit: int = 3):
         """Search the web for current medical information not found internally."""
         search_client = TavilyClient(api_key=get_settings().TAVILY_KEY)
-        response = search_client.search(query, max_results=Chat_Request.limit)
+        response = search_client.search(query, max_results=limit)
 
         if not response:
             return "No relevant web results found."
