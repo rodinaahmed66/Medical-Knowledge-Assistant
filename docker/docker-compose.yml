@@ -90,7 +90,7 @@ services:
         done
         
         echo "=== Pulling qwen2.5:7b ==="
-        ollama pull llama3.2:3b
+        ollama pull qwen2.5:7b
         
         echo "=== Pulling medgemma:4b ==="
         ollama pull medgemma:4b
