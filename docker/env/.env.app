@@ -21,11 +21,11 @@ PRIMARY_LAN="en"
 
 
 OPENAI_KEY="vbgntymyu"
-OPENAI_URL="http://ollama:11434"
+OPENAI_URL="http://ollama:11434/v1"
 
 
-CHAT_MODEL_ID="qwen2.5:7b"
-GENERATION_MODEL_ID="medgemma:4b"
+CHAT_MODEL_ID="qwen3.5:4b"
+GENERATION_MODEL_ID="qwen3.5:4b"
 EMBEDDING_MODEL_ID= "mxbai-embed-large"
 EMBEDDING_MODEL_SIZE=1024
 

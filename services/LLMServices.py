@@ -48,7 +48,7 @@ class OpenAIProvider():
             temperature=temperature if temperature else self.default_generation_temperature
             chat_history.append(
                  self.construct_prompt(prompt=prompt,
-                     role=OpenAIEnums.USER.value
+                     role="user"
                     )
                     )
             response=self.client.chat.completions.create(
