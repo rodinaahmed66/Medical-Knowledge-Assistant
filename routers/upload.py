@@ -75,7 +75,8 @@ async def upload(request:Request,
     await file_model.create_file(
         file_id=file_id,
         filename=file.filename,
-        file_type=file.content_type
+        file_type=file.content_type,
+        
     )
 
 

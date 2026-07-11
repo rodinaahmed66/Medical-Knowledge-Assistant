@@ -18,7 +18,7 @@ class settings(BaseSettings):
     
     LLAMA_CLOUD_API_KEY:str
 
-    DEFAULT_LANG:str
+    DEFAULT_LAN:str
     PRIMARY_LAN:str
  
 

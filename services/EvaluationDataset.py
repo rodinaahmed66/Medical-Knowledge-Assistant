@@ -49,7 +49,7 @@ async def build_eval_set(sample_size: int = None):
             return
 
         if sample_size:
-            chunks = random.sample(chunks, sample_size,seed=42)
+            chunks = random(42).sample(chunks, sample_size)
 
         print(f"Generating questions for {len(chunks)} chunks...")
         for chunk in chunks:

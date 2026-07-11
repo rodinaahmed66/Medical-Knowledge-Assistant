@@ -16,7 +16,7 @@ def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, llm_service: OpenAIP
 
     for item in eval_set:
         query_vector = llm_service.embed_text(item["query"])
-        results = vector_db.semantic_search(
+        results = await vector_db.semantic_search(
             collection_name=collection_name,
             query_vector=query_vector,
             limit=k,

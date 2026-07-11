@@ -18,7 +18,7 @@ class ProcessController(BaseController):
         parser=LlamaParse(    
         api_key=self.app_settings.LLAMA_CLOUD_API_KEY,
         result_type='markdown',  
-        language=self.app_settings.DEFAULT_LANG,
+        language=self.app_settings.DEFAULT_LAN,
         verbose=True)
         
         documents= await parser.aload_data(self.file_path)
