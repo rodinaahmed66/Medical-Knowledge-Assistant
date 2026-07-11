@@ -8,8 +8,6 @@ services:
       - "8000:8000"
     volumes:
       - fastapi_data:/app/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway" 
     networks:
       - backend
     restart: always
@@ -19,8 +17,6 @@ services:
         condition: service_healthy
       qdrant:
         condition: service_healthy
-      ollama: 
-        condition: service_started
     env_file:
       - ./env/.env.app
 
@@ -65,44 +61,6 @@ services:
       start_period: 5s
 
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    environment:
-      - OLLAMA_KEEP_ALIVE=24h
-      - OLLAMA_NUM_THREADS=4
-      - OLLAMA_NUM_PARALLEL=2         
-      - OLLAMA_MAX_LOADED_MODELS=2
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    networks:
-      - backend
-    restart: always
-    entrypoint: [ "/bin/sh", "-c" ]
-    command:
-      - |
-        ollama serve &
-        
-        until ollama list >/dev/null 2>&1; do 
-          sleep 1
-        done
-        
-        echo "=== Pulling qwen3.5:4b ==="
-        ollama pull qwen3.5:4b
-
-        echo "=== Pulling mxbai-embed-large ==="
-        ollama pull mxbai-embed-large
-
-        wait
-    
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:11434/api/tags || exit 1"]
-      interval: 10s       
-      timeout: 5s       
-      retries: 60       
-      start_period: 10s 
 
 networks:
   backend:
@@ -111,4 +69,3 @@ volumes:
   fastapi_data:
   postgres_data:
   qdrant_data:
-  ollama_data:

@@ -22,9 +22,8 @@ class settings(BaseSettings):
     PRIMARY_LAN:str
  
 
-    OPENAI_KEY:str
-    OPENAI_URL:str
-    OLLAMA_URL:str
+    GROQ_KEY:str
+    GROQ_URL:str
 
     
     CHAT_MODEL_ID:str

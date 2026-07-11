@@ -20,15 +20,15 @@ DEFAULT_LAN="en"
 PRIMARY_LAN="en"
 
 
-OPENAI_KEY="vbgntymyu"
-OPENAI_URL="http://ollama:11434/v1"
-OLLAMA_URL="http://ollama:11434"
+GROQ_KEY="vbgntymyu"
+GROQ_URL="https://api.groq.com/openai/v1"
 
 
-CHAT_MODEL_ID="qwen3.5:4b"
-GENERATION_MODEL_ID="qwen3.5:4b"
-EMBEDDING_MODEL_ID= "mxbai-embed-large"
-EMBEDDING_MODEL_SIZE=1024
+
+CHAT_MODEL_ID="openai/gpt-oss-20b"
+GENERATION_MODEL_ID="openai/gpt-oss-20b"
+EMBEDDING_MODEL_ID="nomic-embed-text-v1_5"
+EMBEDDING_MODEL_SIZE=768
 
 
 INPUT_DEFAULT_MAX_CHARACTERS=1024

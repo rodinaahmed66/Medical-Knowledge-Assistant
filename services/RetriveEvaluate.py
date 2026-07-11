@@ -53,8 +53,8 @@ async def main():
         eval_set = json.load(f)
 
     llm_service = OpenAIProvider(
-        api_key=settings.OPENAI_KEY,
-        base_url=settings.OPENAI_URL,
+        api_key=settings.GROQ_API_KEY,
+        base_url=settings.GROQ_URL,
     )
     llm_service.set_embedding_model(
         model_id=settings.EMBEDDING_MODEL_ID,

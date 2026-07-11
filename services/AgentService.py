@@ -1,4 +1,4 @@
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from .AgentTools import get_agent_tools
 from services.LLMServices import OpenAIProvider
 from langgraph.prebuilt import create_react_agent
@@ -14,9 +14,10 @@ class AgentService():
         self.llm_service = llm_service
         self.vector_db = vector_db
         self.app_settings = get_settings()
-        self.chat_model = ChatOllama(
-            model=self.app_settings.CHAT_MODEL_ID,   
-            base_url=self.app_settings.OLLAMA_URL,
+        self.chat_model = ChatOpenAI(
+            model=self.app_settings.CHAT_MODEL_ID,
+            base_url=self.app_settings.GROQ_URL,
+            api_key=self.app_settings.GROQ_API_KEY,
             temperature=self.app_settings.AGENT_TEMPERATURE,
         )
 

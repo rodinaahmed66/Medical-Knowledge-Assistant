@@ -19,8 +19,8 @@ async def startup_span():
         app.db_engine, class_=AsyncSession, expire_on_commit=False
     )
     app.llm_service=OpenAIProvider(
-                api_key=settings.OPENAI_KEY,
-                base_url=settings.OPENAI_URL,
+                api_key=settings.GROQ_API_KEY,
+                base_url=settings.GROQ_URL,
                 default_input_max_characters=settings.INPUT_DEFAULT_MAX_CHARACTERS,
                 default_generation_output_tokens=settings.GENERATION_DEFAULT_MAX_TOKENS ,
                 default_generation_temperature=settings.GENERATION_DEFAULT_TEMPERATURE
