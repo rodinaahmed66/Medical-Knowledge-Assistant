@@ -72,7 +72,7 @@ services:
       - OLLAMA_KEEP_ALIVE=24h
       - OLLAMA_NUM_THREADS=4
       - OLLAMA_NUM_PARALLEL=2         
-      - OLLAMA_MAX_LOADED_MODELS=3
+      - OLLAMA_MAX_LOADED_MODELS=2
     ports:
       - "11434:11434"
     volumes:
@@ -91,9 +91,6 @@ services:
         
         echo "=== Pulling qwen2.5:7b ==="
         ollama pull qwen2.5:7b
-        
-        echo "=== Pulling medgemma:4b ==="
-        ollama pull medgemma:4b
 
         echo "=== Pulling mxbai-embed-large ==="
         ollama pull mxbai-embed-large
@@ -101,7 +98,7 @@ services:
         wait
     
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:11434/api/tags || exit 1"]
       interval: 10s       
       timeout: 5s       
       retries: 60       
