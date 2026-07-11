@@ -17,7 +17,7 @@ class AgentService():
         self.chat_model = ChatOpenAI(
             model=self.app_settings.CHAT_MODEL_ID,
             base_url=self.app_settings.GROQ_URL,
-            api_key=self.app_settings.GROQ_API_KEY,
+            api_key=self.app_settings.GROQ_KEY,
             temperature=self.app_settings.AGENT_TEMPERATURE,
         )
 

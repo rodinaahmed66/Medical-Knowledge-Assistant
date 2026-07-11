@@ -33,7 +33,7 @@ async def build_eval_set(sample_size: int = None):
     db_client = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     llm_service = OpenAIProvider(
-        api_key=settings.GROQ_API_KEY,
+        api_key=settings.GROQ_KEY,
         base_url=settings.GROQ_URL,
     )
     llm_service.set_generation_model(model_id=settings.GENERATION_MODEL_ID)
