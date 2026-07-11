@@ -1,7 +1,7 @@
+from langchain_ollama import ChatOllama
 from .AgentTools import get_agent_tools
 from services.LLMServices import OpenAIProvider
 from langgraph.prebuilt import create_react_agent
-from langchain_openai import ChatOpenAI
 from config.help import get_settings
 from tavily import TavilyClient
 
@@ -14,11 +14,10 @@ class AgentService():
         self.llm_service = llm_service
         self.vector_db = vector_db
         self.app_settings = get_settings()
-        self.chat_model = ChatOpenAI(
+        self.chat_model = ChatOllama(
             model=self.app_settings.CHAT_MODEL_ID,   
             base_url=self.app_settings.OPENAI_URL,
-            api_key=self.app_settings.OPENAI_KEY,
-            temperature=self.app_settings.GENERATION_DEFAULT_TEMPERATURE,
+            temperature=self.app_settings.AGENT_TEMPERATURE,
         )
 
         self.tools = get_agent_tools(self.llm_service, self.vector_db)

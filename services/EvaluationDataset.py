@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from config.help import get_settings
 from services.LLMServices import OpenAIProvider
+from models.schemes.FileScheme import FileRecord
 from models.schemes.ChunkScheme import ChunkRecord
 
 settings = get_settings()
