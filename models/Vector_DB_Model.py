@@ -83,7 +83,7 @@ class Vector_DB_Model:
 
             await self.client.upsert(
                 collection_name=collection_name,
-                records=batch_records
+                points=batch_records
             )
 
         return True

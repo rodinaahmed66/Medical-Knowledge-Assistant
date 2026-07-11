@@ -16,7 +16,7 @@ class AgentService():
         self.app_settings = get_settings()
         self.chat_model = ChatOllama(
             model=self.app_settings.CHAT_MODEL_ID,   
-            base_url=self.app_settings.OPENAI_URL,
+            base_url=self.app_settings.OLLAMA_URL,
             temperature=self.app_settings.AGENT_TEMPERATURE,
         )
 

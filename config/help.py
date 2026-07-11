@@ -24,6 +24,7 @@ class settings(BaseSettings):
 
     OPENAI_KEY:str
     OPENAI_URL:str
+    OLLAMA_URL:str
 
     
     CHAT_MODEL_ID:str

@@ -22,6 +22,7 @@ PRIMARY_LAN="en"
 
 OPENAI_KEY="vbgntymyu"
 OPENAI_URL="http://ollama:11434/v1"
+OLLAMA_URL="http://ollama:11434"
 
 
 CHAT_MODEL_ID="qwen3.5:4b"
