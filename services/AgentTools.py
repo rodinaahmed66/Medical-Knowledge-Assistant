@@ -2,12 +2,13 @@ from routers.Chat_Request import Chat_Request
 from langchain_core.tools import tool
 from config.help import get_settings
 from tavily import TavilyClient
+from typing import Union
 import asyncio
 
 def get_agent_tools(llm_service, vector_db):
 
     @tool
-    async def vector_search(query: str, limit: int = 3):
+    async def vector_search(query: Union[str, list[str]], limit: int = 3):
         """Search the internal medical knowledge base for relevant document chunks."""
         
         vector_query = await asyncio.to_thread(llm_service.embed_text, query)
@@ -23,7 +24,7 @@ def get_agent_tools(llm_service, vector_db):
         return [{"text": record.payload.get("text"), "score": record.score} for record in results]
 
     @tool
-    def web_tool(query: str, limit: int = 3):
+    def web_tool(query: Union[str, list[str]], limit: int = 3):
         """Search the web for current medical information not found internally."""
         search_client = TavilyClient(api_key=get_settings().TAVILY_KEY)
         response = search_client.search(query, max_results=limit)
