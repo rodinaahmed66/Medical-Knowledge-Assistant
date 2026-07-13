@@ -1,15 +1,15 @@
-import asyncio
-import json
 import os
 import random 
+import asyncio
+import json
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-
 from config.help import get_settings
 from services.LLMServices import OpenAIProvider
 from models.schemes.FileScheme import FileRecord
 from models.schemes.ChunkScheme import ChunkRecord
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+
 
 settings = get_settings()
 
@@ -25,10 +25,12 @@ Return only the question, nothing else.
 """
 
 async def build_eval_set(sample_size: int = None):
+
     postgres_conn = (
         f"postgresql+asyncpg://{settings.POSTGRES_USERNAME}:{settings.POSTGRES_PASSWORD}"
         f"@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_MAIN_DATABASE}"
     )
+
     engine = create_async_engine(postgres_conn)
     db_client = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
@@ -54,11 +56,14 @@ async def build_eval_set(sample_size: int = None):
             chunks = random.sample(chunks, sample_size)
 
         print(f"Generating questions for {len(chunks)} chunks...")
+
         for chunk in chunks:
+
             question = llm_service.generate_text(
                 prompt=QUERY_GEN_PROMPT.format(chunk_text=chunk.chunk_text),
                 chat_history=[],
             )
+            
             if not question:
                 continue
 
@@ -80,3 +85,5 @@ async def build_eval_set(sample_size: int = None):
 
 if __name__ == "__main__":
     asyncio.run(build_eval_set(sample_size=25))
+
+    

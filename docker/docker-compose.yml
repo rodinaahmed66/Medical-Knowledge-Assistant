@@ -8,6 +8,7 @@ services:
       - "8000:8000"
     volumes:
       - fastapi_data:/app/data
+      - ./eval_output:/app/eval_output
     networks:
       - backend
     restart: always

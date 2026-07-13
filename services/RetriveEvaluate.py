@@ -9,8 +9,9 @@ from models.Vector_DB_Model import Vector_DB_Model
 settings = get_settings()
 
 
-def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, llm_service: OpenAIProvider,
+async def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, llm_service: OpenAIProvider,
                  collection_name: str, k: int = 5) -> dict:
+                 
     recalls = []
     per_query_results = []
 
@@ -69,7 +70,7 @@ async def main():
 
     all_reports = {}
     for k in [1, 3, 5, 10]:
-        report = recall_at_k(
+        report = await recall_at_k(
             eval_set=eval_set,
             vector_db=vector_db,
             llm_service=llm_service,
@@ -85,7 +86,7 @@ async def main():
     with open("eval_output/recall_summary.json", "w") as f:
         json.dump(all_reports, f, indent=2)
 
-    vector_db.disconnect()
+    await vector_db.disconnect()
     print("\nSummary written to eval_output/recall_summary.json")
 
 
