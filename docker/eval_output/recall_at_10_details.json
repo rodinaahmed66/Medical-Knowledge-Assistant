@@ -1,0 +1,458 @@
+[
+  {
+    "query": "What maternal doses of the drug cause increased post\u2011implantation loss and decreased fetal body weight in rats and rabbits?",
+    "relevant_ids": [
+      652
+    ],
+    "retrieved_ids": [
+      642,
+      643,
+      712,
+      651,
+      652,
+      653,
+      716,
+      654,
+      715,
+      658
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What guidance did WHO issue in 2020 to help scale up cervical cancer screening and treatment, especially regarding HPV testing and medical devices?",
+    "relevant_ids": [
+      115
+    ],
+    "retrieved_ids": [
+      96,
+      387,
+      261,
+      14,
+      114,
+      115,
+      116,
+      54,
+      55,
+      411
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Where can I find the full details of the systematic reviewers and modellers teams?",
+    "relevant_ids": [
+      26
+    ],
+    "retrieved_ids": [
+      417,
+      65,
+      453,
+      171,
+      461,
+      462,
+      175,
+      177,
+      25,
+      26
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How quickly can I expect Lipitor to lower LDL cholesterol and raise HDL in patients with primary hyperlipidemia?",
+    "relevant_ids": [
+      759
+    ],
+    "retrieved_ids": [
+      513,
+      769,
+      741,
+      785,
+      786,
+      532,
+      533,
+      759,
+      762,
+      733
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the different triage categories used in cervical screening?",
+    "relevant_ids": [
+      282
+    ],
+    "retrieved_ids": [
+      385,
+      258,
+      261,
+      200,
+      116,
+      54,
+      55,
+      184,
+      185,
+      282
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which high\u2011risk HPV types require immediate ablative treatment, and which should be returned to routine screening?",
+    "relevant_ids": [
+      250
+    ],
+    "retrieved_ids": [
+      326,
+      250,
+      74,
+      240,
+      339,
+      84,
+      83,
+      313,
+      378,
+      348
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How many columns does the table contain?",
+    "relevant_ids": [
+      229
+    ],
+    "retrieved_ids": [
+      770,
+      775,
+      139,
+      429,
+      399,
+      276,
+      119,
+      631,
+      634,
+      189
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What are the different HPV testing options and how do they differ in terms of genotyping?",
+    "relevant_ids": [
+      143
+    ],
+    "retrieved_ids": [
+      387,
+      134,
+      137,
+      142,
+      143,
+      273,
+      306,
+      184,
+      59,
+      349
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How many non\u2011cardiovascular deaths occurred in each study arm and what was the hazard ratio for those deaths?",
+    "relevant_ids": [
+      754
+    ],
+    "retrieved_ids": [
+      741,
+      742,
+      747,
+      748,
+      751,
+      753,
+      754,
+      758,
+      728,
+      733
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which HPV types are most commonly associated with cervical cancer?",
+    "relevant_ids": [
+      105
+    ],
+    "retrieved_ids": [
+      65,
+      105,
+      210,
+      211,
+      146,
+      148,
+      406,
+      151,
+      378,
+      158
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which transporters are involved in the absorption and clearance of atorvastatin?",
+    "relevant_ids": [
+      690
+    ],
+    "retrieved_ids": [
+      608,
+      704,
+      677,
+      678,
+      617,
+      523,
+      686,
+      690,
+      668,
+      669
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the differences in cardiovascular and non\u2011cardiovascular mortality between patients taking 80\u202fmg versus 10\u202fmg of Lipitor?",
+    "relevant_ids": [
+      758
+    ],
+    "retrieved_ids": [
+      579,
+      740,
+      741,
+      520,
+      745,
+      718,
+      756,
+      758,
+      728,
+      729
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Is Lipitor 80\u202fmg associated with a higher risk of hemorrhagic stroke in patients who have recently had one?",
+    "relevant_ids": [
+      557
+    ],
+    "retrieved_ids": [
+      582,
+      584,
+      585,
+      557,
+      526,
+      559,
+      560,
+      558,
+      525,
+      758
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What strategies can reduce loss to follow\u2011up among women with high\u2011risk pre\u2011cancerous cervical lesions, even if they might lead to some overtreatment?",
+    "relevant_ids": [
+      90
+    ],
+    "retrieved_ids": [
+      256,
+      392,
+      393,
+      79,
+      80,
+      245,
+      246,
+      373,
+      90,
+      252
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Does taking cyclosporine or gemfibrozil together with Lipitor increase the risk of rhabdomyolysis?",
+    "relevant_ids": [
+      603
+    ],
+    "retrieved_ids": [
+      544,
+      545,
+      515,
+      516,
+      626,
+      595,
+      594,
+      602,
+      603,
+      604
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which individuals are listed under the WHO Africa region, and what institutions and countries are they associated with?",
+    "relevant_ids": [
+      431
+    ],
+    "retrieved_ids": [
+      454,
+      489,
+      9,
+      45,
+      495,
+      431,
+      432,
+      433,
+      370,
+      437
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which professionals and their respective institutions are mentioned in the passage?",
+    "relevant_ids": [
+      33
+    ],
+    "retrieved_ids": [
+      416,
+      10,
+      462,
+      494,
+      208,
+      433,
+      403,
+      180,
+      468,
+      379
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "Where can I find the WHO guideline on using mRNA tests for HPV in cervical cancer screening?",
+    "relevant_ids": [
+      96
+    ],
+    "retrieved_ids": [
+      96,
+      1,
+      2,
+      387,
+      133,
+      261,
+      14,
+      55,
+      411,
+      412
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Did the GDG reach consensus on all recommendations, or did they rely on a majority vote?",
+    "relevant_ids": [
+      224
+    ],
+    "retrieved_ids": [
+      224,
+      225,
+      173,
+      174,
+      176,
+      402,
+      179,
+      182,
+      183,
+      223
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Do HPV genotyping tests give specific type information or just a positive/negative result?",
+    "relevant_ids": [
+      239
+    ],
+    "retrieved_ids": [
+      352,
+      356,
+      137,
+      237,
+      239,
+      143,
+      273,
+      306,
+      59,
+      349
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What symptoms should I watch for that might indicate rhabdomyolysis while taking Lipitor?",
+    "relevant_ids": [
+      516
+    ],
+    "retrieved_ids": [
+      545,
+      515,
+      516,
+      548,
+      612,
+      618,
+      626,
+      665,
+      827,
+      796
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which antiviral medication is added to the treatment regimen?",
+    "relevant_ids": [
+      614
+    ],
+    "retrieved_ids": [
+      613,
+      614,
+      74,
+      75,
+      240,
+      817,
+      241,
+      115,
+      693,
+      606
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which experts from Argentina, Uganda, Brazil, India, Malawi, South Africa, and Zimbabwe are part of the research team?",
+    "relevant_ids": [
+      28
+    ],
+    "retrieved_ids": [
+      42,
+      28,
+      431,
+      432,
+      433,
+      434,
+      435,
+      476,
+      29,
+      446
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the severity scores for muscle spasms, myalgia, and insomnia?",
+    "relevant_ids": [
+      573
+    ],
+    "retrieved_ids": [
+      573,
+      548,
+      549,
+      550,
+      823,
+      824,
+      825,
+      572,
+      829,
+      574
+    ],
+    "recall": 1.0
+  }
+]

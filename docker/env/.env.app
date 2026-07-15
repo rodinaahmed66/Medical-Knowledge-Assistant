@@ -22,13 +22,14 @@ PRIMARY_LAN="en"
 
 GROQ_KEY="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"
 GROQ_URL="https://api.groq.com/openai/v1"
-
+JINA_KEY="jina_aed9606016424b268c87ab64d8f8e7e6adcThJhvp7M1sfekDQMFb6cWnBMf"
+JINA_URL="https://api.jina.ai/v1"
 
 
 CHAT_MODEL_ID="openai/gpt-oss-20b"
 GENERATION_MODEL_ID="openai/gpt-oss-20b"
-EMBEDDING_MODEL_ID="nomic-embed-text-v1_5"
-EMBEDDING_MODEL_SIZE=768
+EMBEDDING_MODEL_ID="jina-embeddings-v3"
+EMBEDDING_MODEL_SIZE=1024
 
 
 INPUT_DEFAULT_MAX_CHARACTERS=4096
@@ -42,3 +43,8 @@ QDRANT_DB_METHOD="Cosine"
 QDRANT_COLLECTION_NAME="medical_chunks"
 
 TAVILY_KEY="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"
+
+LANGSMITH_TRACING_V2="true"
+LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
+LANGSMITH_API_KEY="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"
+LANGSMITH_PROJECT="medical knowledge assistant"
