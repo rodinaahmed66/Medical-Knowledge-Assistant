@@ -24,6 +24,8 @@ class settings(BaseSettings):
 
     GROQ_KEY:str
     GROQ_URL:str
+    JINA_KEY:str
+    JINA_URL:str
 
     
     CHAT_MODEL_ID:str
@@ -42,6 +44,11 @@ class settings(BaseSettings):
     QDRANT_COLLECTION_NAME:str
 
     TAVILY_KEY:str
+
+    LANGSMITH_TRACING_V2:str
+    LANGSMITH_ENDPOINT:str
+    LANGSMITH_API_KEY:str
+    LANGSMITH_PROJECT:str
 
     model_config = SettingsConfigDict(env_file=".env")
 

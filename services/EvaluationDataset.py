@@ -34,11 +34,11 @@ async def build_eval_set(sample_size: int = None):
     engine = create_async_engine(postgres_conn)
     db_client = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-    llm_service = OpenAIProvider(
+    generation_service = OpenAIProvider(
         api_key=settings.GROQ_KEY,
         base_url=settings.GROQ_URL,
     )
-    llm_service.set_generation_model(model_id=settings.GENERATION_MODEL_ID)
+    generation_service.set_generation_model(model_id=settings.GENERATION_MODEL_ID)
 
     eval_set = []
 
@@ -59,7 +59,7 @@ async def build_eval_set(sample_size: int = None):
 
         for chunk in chunks:
 
-            question = llm_service.generate_text(
+            question = generation_service.generate_text(
                 prompt=QUERY_GEN_PROMPT.format(chunk_text=chunk.chunk_text),
                 chat_history=[],
             )

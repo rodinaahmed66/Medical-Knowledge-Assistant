@@ -79,8 +79,6 @@ async def upload(request:Request,
         
     )
 
-
-
     chunk_records=await chunk_model.insert_chunks(
             file_id=file_id,
             chunks=chunks,
@@ -90,7 +88,7 @@ async def upload(request:Request,
     metadata=[chunk.metadata if chunk.metadata else {} for chunk in chunks]
     ids=[record.chunk_id for record in chunk_records]
     vectors = await asyncio.to_thread(
-            request.app.llm_service.embed_text, 
+            request.app.embedding_service.embed_text, 
             texts
         )
 

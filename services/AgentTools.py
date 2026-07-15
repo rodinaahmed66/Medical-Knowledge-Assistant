@@ -5,16 +5,17 @@ from tavily import TavilyClient
 from typing import Union
 import asyncio
 
-def get_agent_tools(llm_service, vector_db):
+def get_agent_tools(embedding_service, vector_db):
 
     @tool
     async def vector_search(query: Union[str, list[str]], limit: int = 3):
         """Search the internal medical knowledge base for relevant document chunks."""
         
-        vector_query = await asyncio.to_thread(llm_service.embed_text, query)
-        results = await vector_db.semantic_search(
+        vector_query = await asyncio.to_thread(embedding_service.embed_text, query)
+        results = await vector_db.hybrid_search(
             collection_name=get_settings().QDRANT_COLLECTION_NAME,
             query_vector=vector_query,
+            query=query, 
             limit=limit
         )
 

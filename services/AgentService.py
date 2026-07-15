@@ -1,3 +1,4 @@
+from langchain_community.callbacks import get_openai_callback
 from services.prompt.en import AGENT_PROMPT_EN
 from services.LLMServices import OpenAIProvider
 from langgraph.prebuilt import create_react_agent
@@ -9,11 +10,12 @@ from tavily import TavilyClient
 
 class AgentService():
 
-    def __init__(self,query:str,llm_service,vector_db):
+    def __init__(self,query:str,generation_service,embedding_service,vector_db):
         super().__init__()
         self.query=query
         self.vector_db = vector_db
-        self.llm_service = llm_service
+        self.embedding_service=embedding_service
+        self.generation_service = generation_service
         self.app_settings = get_settings()
         
         self.chat_model = ChatOpenAI(
@@ -23,7 +25,7 @@ class AgentService():
             temperature=self.app_settings.AGENT_TEMPERATURE,
         )
 
-        self.tools = get_agent_tools(self.llm_service, self.vector_db)
+        self.tools = get_agent_tools(self.embedding_service, self.vector_db)
 
         self.agent=create_react_agent(
             model=self.chat_model,
@@ -31,6 +33,7 @@ class AgentService():
             prompt=(
                 AGENT_PROMPT_EN
             ),
+
         )
 
     async def answer(self) -> str:

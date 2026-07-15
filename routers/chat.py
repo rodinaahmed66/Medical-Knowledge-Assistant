@@ -10,7 +10,8 @@ async def chat (request:Request,
                 chat_request:Chat_Request):
     
     agent_service=AgentService(
-        llm_service=request.app.llm_service,
+        generation_service=request.app.generation_service,
+        embedding_service=request.app.embedding_service,
         vector_db=request.app.vector_db,
         query=chat_request.query
     )

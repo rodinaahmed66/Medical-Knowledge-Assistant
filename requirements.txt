@@ -24,6 +24,8 @@ alembic>=1.13.0
 tavily-python
 fastembed
 
+prometheus-client==0.21.1
+starlette-exporter==0.23.0
+fastapi-health==0.4.0
 
-# Highly recommended utility for langchain-openai internals
-tiktoken>=0.5.0
+langsmith>=0.1.0

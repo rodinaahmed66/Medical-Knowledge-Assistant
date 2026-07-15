@@ -9,17 +9,18 @@ from models.Vector_DB_Model import Vector_DB_Model
 settings = get_settings()
 
 
-async def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, llm_service: OpenAIProvider,
-                 collection_name: str, k: int = 5) -> dict:
+async def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, embedding_service: OpenAIProvider,
+                 collection_name: str, k: int = 3) -> dict:
                  
     recalls = []
     per_query_results = []
 
     for item in eval_set:
-        query_vector = llm_service.embed_text(item["query"])
-        results = await vector_db.semantic_search(
+        query_vector = embedding_service.embed_text(item["query"])
+        results = await vector_db.hybrid_search(
             collection_name=collection_name,
-            query_vector=query_vector,
+            query=item["query"],          
+            query_vector=query_vector,   
             limit=k,
         )
 
@@ -53,11 +54,12 @@ async def main():
     with open(dataset_path) as f:
         eval_set = json.load(f)
 
-    llm_service = OpenAIProvider(
-        api_key=settings.GROQ_KEY,
-        base_url=settings.GROQ_URL,
+    embedding_service = OpenAIProvider(
+        api_key=settings.JINA_KEY,
+        base_url=settings.JINA_URL,
+
     )
-    llm_service.set_embedding_model(
+    embedding_service.set_embedding_model(
         model_id=settings.EMBEDDING_MODEL_ID,
         embedding_size=settings.EMBEDDING_MODEL_SIZE,
     )
@@ -73,7 +75,7 @@ async def main():
         report = await recall_at_k(
             eval_set=eval_set,
             vector_db=vector_db,
-            llm_service=llm_service,
+            embedding_service=embedding_service,
             collection_name=settings.QDRANT_COLLECTION_NAME,
             k=k,
         )

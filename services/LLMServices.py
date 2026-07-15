@@ -1,3 +1,4 @@
+import time
 import logging
 from openai import OpenAI
 
@@ -51,47 +52,64 @@ class OpenAIProvider():
                      role="user"
                     )
                     )
-            response=self.client.chat.completions.create(
-                 model=self.generation_model_id,
-                 messages=chat_history,
-                 max_tokens=max_output_tokens,
-                 temperature=temperature
-            )
+            try:
+                response=self.client.chat.completions.create(
+                    model=self.generation_model_id,
+                    messages=chat_history,
+                    max_tokens=max_output_tokens,
+                    temperature=temperature
+                )
+                time.sleep(2)
+            
+            except Exception as e:
+                self.logger.error(f"Rate limited")
+                return None   
+
             if not response or not response.choices or len(response.choices)==0 or not response.choices[0].message:
                  self.logger.error("Error while generating test with OpenAI")
+
             
             return response.choices[0].message.content
             
-    def embed_text(self,texts: str | list[str],document_type:str=None)->list[float] | list[list[float]] | None:
+    def embed_text(self, texts: str | list[str], document_type: str = None) -> list[float] | list[list[float]] | None:
 
-            if not self.client:
-                self.logger.error("OpenAI client was not set")
-                return None
-            
-            if not self.embedding_model_id:
-                self.logger.error("Embedding model for OpenAI client was not set")
-                return None   
+        if not self.client:
+            self.logger.error("OpenAI client was not set")
+            return None
+        
+        if not self.embedding_model_id:
+            self.logger.error("Embedding model for OpenAI client was not set")
+            return None   
 
-            try:    
-                is_single = isinstance(texts, str)
-                response=self.client.embeddings.create(
+        is_single = isinstance(texts, str)
+        input_texts = [texts] if is_single else texts
+
+        try:
+            all_embeddings = []
+            batch_size = 50  
+
+            for i in range(0, len(input_texts), batch_size):
+                batch = input_texts[i:i + batch_size]
+                response = self.client.embeddings.create(
                     model=self.embedding_model_id,
-                    input=texts
+                    input=batch
                 )
 
                 if not response or not response.data:
                     self.logger.error("Error while embedding texts with OpenAI")
                     return None
 
-                if is_single:
-                    return response.data[0].embedding
-                else:
-                    sorted_data = sorted(response.data, key=lambda x: x.index)
-                    return [item.embedding for item in sorted_data]
- 
-            except Exception as e:
-                self.logger.error(f"Failed to generate batch embeddings: {e}")
-                return None
+                
+                all_embeddings.extend([item.embedding for item in response.data])
+                if i + batch_size < len(input_texts):
+                   time.sleep(1.5)
+
+            return all_embeddings[0] if is_single else all_embeddings
+
+        except Exception as e:
+            self.logger.error(f"Failed to generate batch embeddings: {e}")
+            return None
+
 
     
     def construct_prompt(self,prompt:str,role:str):
@@ -102,3 +120,5 @@ class OpenAIProvider():
     
     def process_text(self,text:str):
          return text[:self.default_input_max_characters].strip()
+
+
