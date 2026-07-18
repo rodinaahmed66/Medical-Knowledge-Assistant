@@ -8,7 +8,7 @@ import asyncio
 def get_agent_tools(embedding_service, vector_db):
 
     @tool
-    async def vector_search(query: Union[str, list[str]], limit: int = 3):
+    async def vector_search(query: str, limit: int = 3):
         """Search the internal medical knowledge base for relevant document chunks."""
         
         vector_query = await asyncio.to_thread(embedding_service.embed_text, query)
@@ -25,7 +25,7 @@ def get_agent_tools(embedding_service, vector_db):
         return [{"text": record.payload.get("text"), "score": record.score} for record in results]
 
     @tool
-    async def web_tool(query: Union[str, list[str]], limit: int = 3):
+    async def web_tool(query:str, limit: int = 3):
         """Search the web for current medical information not found internally."""
         search_client = AsyncTavilyClient(api_key=get_settings().TAVILY_KEY)
         response = search_client.search(query, max_results=limit)
