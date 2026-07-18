@@ -1,7 +1,7 @@
 from routers.Chat_Request import Chat_Request
 from langchain_core.tools import tool
 from config.help import get_settings
-from tavily import TavilyClient
+from tavily import AsyncTavilyClient
 from typing import Union
 import asyncio
 
@@ -25,9 +25,9 @@ def get_agent_tools(embedding_service, vector_db):
         return [{"text": record.payload.get("text"), "score": record.score} for record in results]
 
     @tool
-    def web_tool(query: Union[str, list[str]], limit: int = 3):
+    async def web_tool(query: Union[str, list[str]], limit: int = 3):
         """Search the web for current medical information not found internally."""
-        search_client = TavilyClient(api_key=get_settings().TAVILY_KEY)
+        search_client = AsyncTavilyClient(api_key=get_settings().TAVILY_KEY)
         response = search_client.search(query, max_results=limit)
 
         if not response:

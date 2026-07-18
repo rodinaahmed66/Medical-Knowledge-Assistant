@@ -44,7 +44,9 @@ class OpenAIProvider():
             if not self.generation_model_id:
                 self.logger.error("Generation model for OpenAI client was not set")
                 return None
-            
+
+                
+            chat_history = list(chat_history) if chat_history else []
             max_output_tokens=max_output_tokens if max_output_tokens else self.default_generation_output_tokens
             temperature=temperature if temperature else self.default_generation_temperature
             chat_history.append(
@@ -67,6 +69,7 @@ class OpenAIProvider():
 
             if not response or not response.choices or len(response.choices)==0 or not response.choices[0].message:
                  self.logger.error("Error while generating test with OpenAI")
+                 return None
 
             
             return response.choices[0].message.content
