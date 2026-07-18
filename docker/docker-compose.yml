@@ -76,6 +76,21 @@ services:
       - backend
     restart: always
 
+  
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.17.1
+    container_name: postgres-exporter
+    env_file:
+      - ./env/.env.postgres-exporter
+    ports:
+      - "9187:9187"
+    networks:
+      - backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+
 
   postgres:
     image: postgres:17
