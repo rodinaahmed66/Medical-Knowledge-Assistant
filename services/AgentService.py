@@ -1,5 +1,5 @@
 from langchain_community.callbacks import get_openai_callback
-from services.prompt.en import AGENT_PROMPT_EN
+from services.prompt.agent_prompt import AGENT_PROMPT_EN
 from services.LLMServices import OpenAIProvider
 from langgraph.prebuilt import create_react_agent
 from langchain_openai import ChatOpenAI

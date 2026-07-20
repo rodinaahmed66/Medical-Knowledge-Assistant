@@ -1,4 +1,5 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from services.prompt.parse_instruction import PARSING_INSTRUCTION_EN
 from .BaseController import BaseController
 from .DataController import DataController
 from config.help import get_settings 
@@ -19,7 +20,9 @@ class ProcessController(BaseController):
         api_key=self.app_settings.LLAMA_CLOUD_API_KEY,
         result_type='markdown',  
         language=self.app_settings.DEFAULT_LAN,
-        verbose=True)
+        parsing_instruction=PARSING_INSTRUCTION_EN,
+        verbose=True
+        )
         
         documents= await parser.aload_data(self.file_path)
         docs=[doc.text for doc in documents]
