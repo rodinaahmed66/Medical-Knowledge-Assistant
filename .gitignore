@@ -6,6 +6,7 @@ docker/env/.env.grafana
 docker/env/.env.postgres-exporter
 docker/env/*.env
 **/.env
+!docker/env/*.example
 
 # Python
 __pycache__/
