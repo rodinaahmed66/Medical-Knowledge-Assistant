@@ -1,15 +1,42 @@
-# Ignore git history
-.git
-.gitignore
-
-# Ignore local data (Docker uses Volumes instead)
-data/
-storage/
-
-# Ignore Python cache
-__pycache__
-*.pyc
-
-# Ignore environment files
+# Environment files — NEVER commit these, they contain API keys and passwords
 .env
-.venv
+.env.*
+docker/env/.env.app
+docker/env/.env.grafana
+docker/env/.env.postgres-exporter
+docker/env/*.env
+**/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Alembic (keep migration versions, ignore local db state if any)
+*.sqlite3
+
+# Data / uploads (don't commit user-uploaded medical PDFs or generated data)
+data/files/
+eval_output/*.json
+!eval_output/.gitkeep
+
+# Docker volumes data (if ever mounted locally instead of named volumes)
+docker/postgres_data/
+docker/qdrant_data/
+docker/prometheus_data/
+docker/grafana_data/
+docker/clickhouse_data/
+docker/openlit_data/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# LangSmith / logs
+*.log
