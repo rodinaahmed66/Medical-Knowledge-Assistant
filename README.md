@@ -1,137 +1,87 @@
-# Medical Knowledge Assistant
+# MediQuery: Agentic RAG for Medical Intelligence
 
-A project I built to explore agentic RAG: upload medical PDFs, ask questions, and an LLM agent decides whether to search the internal knowledge base, the web, or both before answering.
+**MediQuery** is a high-performance medical document assistant. Unlike standard RAG (Retrieval-Augmented Generation) systems that are limited to a static database, MediQuery uses an **Autonomous ReAct Agent**. This agent intelligently decides whether to retrieve answers from your private medical library or search the live web for the latest clinical research and news.
 
-## Idea
+---
 
-Instead of a plain "retrieve-then-generate" pipeline, this project uses a **ReAct-style agent** that decides *for itself* which tool to call and how many times to call it:
+## 🛠 Technology Stack
 
-1. A user uploads medical documents (PDF/etc). They're parsed, chunked, embedded, and stored in Qdrant (hybrid dense + sparse vectors).
-2. A user asks a question via `/chat/ask`.
-3. An agent (LangGraph `create_react_agent`) reasons over the question and picks between:
-   - `vector_search` — hybrid semantic + keyword search over the internal medical knowledge base (Qdrant).
-   - `web_tool` — live web search (Tavily) for anything not covered internally.
-4. The agent loops (search → observe → search again if needed → answer) until it's confident, then returns a final answer.
+| Component | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Orchestration** | **FastAPI / LangGraph** | High-speed API and Agentic state management. |
+| **LLM Inference** | **Groq (Llama 3)** | Fast reasoning and natural language generation. |
+| **Parsing** | **LlamaParse** | Converts complex medical PDFs/tables into Markdown. |
+| **Relational DB** | **PostgreSQL** | Stores file metadata, chunk history, and relations. |
+| **Vector DB** | **Qdrant** | Performs Hybrid Search (Dense + Sparse/BM25). |
+| **Embeddings** | **Jina AI & FastEmbed** | Semantic (Dense) and Keyword (Sparse) vectorization. |
+| **Search Tool** | **Tavily AI** | Specialized AI web search for medical data. |
+| **Observability** | **Prometheus & Grafana** | Real-time monitoring of latency and API health. |
 
-This lets the system fall back to the web when the internal KB doesn't have the answer, rather than hallucinating or refusing.
+---
 
-## Architecture
+## 🏗 Project Architecture
 
-| Component | Role |
-|---|---|
-| **FastAPI** | HTTP API — `/upload/file`, `/chat/ask` |
-| **PostgreSQL** | Stores file metadata + text chunks (source of truth) |
-| **Qdrant** | Vector DB — hybrid dense (semantic) + sparse (BM25) search with RRF fusion |
-| **LlamaParse** | Parses uploaded documents (PDF, etc.) into clean markdown/text |
-| **LangChain** (`RecursiveCharacterTextSplitter`) | Splits parsed documents into chunks |
-| **Groq** (via OpenAI-compatible wrapper) | LLM backend for the agent's reasoning/generation |
-| **Jina** (via OpenAI-compatible wrapper) | Embedding backend for dense vectors |
-| **LangGraph** | Builds the ReAct agent loop (ties LLM + tools together) |
-| **Tavily** | Web search tool for the agent |
-| **Prometheus + Grafana** | Infrastructure-level monitoring (HTTP metrics) |
-| **LangSmith** | Agent/LLM-level tracing (what the agent did, step by step) |
+The project follows a clean **Controller-Service-Model** pattern:
+- **Routers**: Define the API surface.
+- **Controllers**: Handle business logic (file validation, path generation).
+- **Models**: Interact with PostgreSQL (via SQLAlchemy) and Qdrant.
+- **Services**: Manage external AI integrations (LLMs, Tools, Parsing).
 
-## How to Run
+---
 
-### Prerequisites
-- Docker + Docker Compose
-- API keys for: Groq, Jina, LlamaParse (Llama Cloud), Tavily, LangSmith
+## 📥 Ingestion Pipeline: `/upload/file`
 
-### 1. Configure environment
-Create `docker/env/.env.app` (used by the `fastapi` service) with at minimum:
+When a file is uploaded, the system executes a multi-stage pipeline:
 
-```env
-APP_VERSION=1
-Max_SIZE_FILE=10
-FILE_ALLOWED_TYPES=["application/pdf"]
-CHUNK_SIZE=1000
-OVERLAP_SIZE=200
+1.  **Validation**: The `DataController` validates the file against allowed MIME types and size limits defined in `BaseSettings`.
+2.  **ID Generation**: A unique UUID5 is generated based on the filename to ensure data consistency.
+3.  **LlamaParse Ingestion**: The file is sent to LlamaCloud. It parses complex medical layouts (like tables or dosage charts) into Markdown format.
+4.  **Recursive Chunking**: The text is split into chunks using `RecursiveCharacterTextSplitter` with defined `CHUNK_SIZE` and `OVERLAP`.
+5.  **PostgreSQL Storage**: The file metadata and text chunks are saved into the `files` and `chunks` tables.
+6.  **Hybrid Indexing**:
+    *   **Dense Vectors**: Chunks are embedded using Jina AI for semantic meaning.
+    *   **Sparse Vectors**: Chunks are embedded using FastEmbed (BM25) for exact keyword matching (e.g., drug names).
+7.  **Qdrant Upsert**: All data (Vectors + Text + Metadata) is stored in Qdrant for retrieval.
 
-POSTGRES_USERNAME=postgres
-POSTGRES_PASSWORD=password
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_MAIN_DATABASE=medical_files
+---
 
-LLAMA_CLOUD_API_KEY=your_key
+## 💬 Agentic Pipeline: `/chat/ask`
 
-DEFAULT_LAN=en
-PRIMARY_LAN=en
+The chat endpoint utilizes a **ReAct Agent** architecture that follows a "Reason-Act-Observe" loop:
 
-GROQ_KEY=your_key
-GROQ_URL=https://api.groq.com/openai/v1
-JINA_KEY=your_key
-JINA_URL=https://api.jina.ai/v1
+1.  **Reasoning**: The Groq-hosted LLM analyzes the user's medical query.
+2.  **Tool Selection**: The agent decides which tool is best suited for the query:
+    *   **`vector_search`**: Used if the query relates to the internal medical documents. It uses **Reciprocal Rank Fusion (RRF)** in Qdrant to find the best match between keyword and semantic results.
+    *   **`web_tool`**: Used if the internal search fails or if the query requires up-to-the-minute medical information from the web.
+3.  **Observation**: The agent reads the results from the selected tool.
+4.  **Synthesis**: The agent combines the retrieved context with its medical knowledge to generate a safe, accurate response.
 
-CHAT_MODEL_ID=your_groq_chat_model
-GENERATION_MODEL_ID=your_groq_generation_model
-EMBEDDING_MODEL_ID=your_jina_embedding_model
-EMBEDDING_MODEL_SIZE=768
+---
 
-INPUT_DEFAULT_MAX_CHARACTERS=1000
-GENERATION_DEFAULT_MAX_TOKENS=1000
-GENERATION_DEFAULT_TEMPERATURE=0.1
-AGENT_TEMPERATURE=0.1
+## 📊 Monitoring & Evaluation
 
-QDRANT_DB_METHOD=Cosine
-QDRANT_DB_PATH=http://qdrant:6333
-QDRANT_COLLECTION_NAME=medical_chunks
+### 1. Prometheus Monitoring
+Custom middleware tracks every request. You can view:
+- **`http_request_duration_seconds`**: Latency of LLM responses and file processing.
+- **`http_requests_total`**: Count of success/failure status codes.
 
-TAVILY_KEY=your_key
+### 2. Retrieval Evaluation
+The project includes a dedicated evaluation suite in `evaluation_recall.py`:
+- **Recall@K**: Measures how often the correct document is retrieved in the top K results.
+- **Synthetic Dataset**: Automatically generates medical questions from your own data to test the system's accuracy.
 
-LANGSMITH_TRACING_V2=true
-LANGSMITH_ENDPOINT=https://api.smith.langchain.com
-LANGSMITH_API_KEY=your_key
-LANGSMITH_PROJECT=medical-rag
-```
+---
 
-Also create `docker/env/.env.grafana` with at least `GF_SECURITY_ADMIN_PASSWORD=your_password`.
+## 🚀 How to Run
 
-### 2. Start the stack
+### 1. Requirements
+- Docker & Docker Compose
+- API Keys: Groq, Jina, Tavily, LlamaParse.
 
+### 2. Setup
+Create an `.env` file in the root and provide your API keys and database credentials.
+
+### 3. Execution
+Launch the entire ecosystem (App, Postgres, Qdrant, Prometheus, Grafana, Node-Exporter) with:
 ```bash
-cd docker
-docker compose up --build
-```
-
-This brings up:
-- FastAPI on `:8000`
-- PostgreSQL on `:5432`
-- Qdrant on `:6333` / `:6334`
-- Prometheus on `:9090`
-- Grafana on `:3000`
-
-On startup, `entrypoint.sh` runs Alembic migrations and ensures the Qdrant collection exists.
-
-### 3. Upload a document
-
-```bash
-curl -X POST http://localhost:8000/upload/file \
-  -F "file=@/path/to/document.pdf"
-```
-
-### 4. Ask a question
-
-```bash
-curl -X POST http://localhost:8000/chat/ask \
-  -H "Content-Type: application/json" \
-  -d '{"query": "How does the guideline define HPV DNA genotyping levels?"}'
-```
-
-### 5. (Optional) Evaluate retrieval quality
-
-```bash
-python -m eval.evaluation_dataset   # generates eval_output/eval_set.json
-python -m eval.recall_evaluation    # computes Recall@1/3/5/10
-```
-
-## Monitoring & Debugging
-
-- **Grafana** (`:3000`) — dashboards over Prometheus metrics (request rate, latency, error rate).
-- **Prometheus** (`:9090`) — raw HTTP-level metrics, scraped from FastAPI's `/informations` endpoint.
-- **LangSmith** — full trace of each agent run: every tool call, prompt, and LLM response, useful for debugging *why* the agent answered the way it did.
-
-## Known Limitations / Next Steps
-- No reranking step after hybrid search — recall@1 is currently weaker than recall@10.
-- Agent sometimes falls back to multiple sequential web searches for one question.
-- `semantic_search` (dense-only) in `Vector_DB_Model` uses an older Qdrant API and isn't currently used by the agent — candidate for removal or update.
+docker-compose up --build
