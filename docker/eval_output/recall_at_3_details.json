@@ -1,289 +1,1369 @@
 [
   {
-    "query": "What maternal doses of the drug cause increased post\u2011implantation loss and decreased fetal body weight in rats and rabbits?",
+    "query": "What genotyping strategies are recommended for HPV DNA testing in countries with different follow\u2011up capacities?",
     "relevant_ids": [
-      652
+      48
     ],
     "retrieved_ids": [
-      651,
-      652,
-      653
+      48,
+      181,
+      159
     ],
     "recall": 1.0
   },
   {
-    "query": "What guidance did WHO issue in 2020 to help scale up cervical cancer screening and treatment, especially regarding HPV testing and medical devices?",
+    "query": "What are the main limitations of using informal consensus methods for developing clinical guidelines?",
     "relevant_ids": [
-      115
+      558
     ],
     "retrieved_ids": [
-      114,
-      115,
-      411
+      1070,
+      578,
+      558
     ],
     "recall": 1.0
   },
   {
-    "query": "Where can I find the full details of the systematic reviewers and modellers teams?",
+    "query": "What methods does the IOM recommend for determining which topics should be addressed in clinical guidelines?",
     "relevant_ids": [
-      26
+      496
     ],
     "retrieved_ids": [
-      25,
-      26,
-      171
+      880,
+      875,
+      959
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "How does the Advisory Committee on Immunization Practices (ACIP) decide which vaccine topics to review and develop guidelines for?",
+    "relevant_ids": [
+      451
+    ],
+    "retrieved_ids": [
+      1097,
+      451,
+      429
     ],
     "recall": 1.0
   },
   {
-    "query": "How quickly can I expect Lipitor to lower LDL cholesterol and raise HDL in patients with primary hyperlipidemia?",
-    "relevant_ids": [
-      759
-    ],
-    "retrieved_ids": [
-      513,
-      741,
-      759
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "What are the different triage categories used in cervical screening?",
+    "query": "Where can I find the list of External Review Group members?",
     "relevant_ids": [
       282
     ],
     "retrieved_ids": [
-      258,
-      116,
-      54
-    ],
-    "recall": 0.0
-  },
-  {
-    "query": "Which high\u2011risk HPV types require immediate ablative treatment, and which should be returned to routine screening?",
-    "relevant_ids": [
-      250
-    ],
-    "retrieved_ids": [
-      378,
-      339,
-      326
-    ],
-    "recall": 0.0
-  },
-  {
-    "query": "How many columns does the table contain?",
-    "relevant_ids": [
-      229
-    ],
-    "retrieved_ids": [
-      139,
-      276,
-      775
-    ],
-    "recall": 0.0
-  },
-  {
-    "query": "What are the different HPV testing options and how do they differ in terms of genotyping?",
-    "relevant_ids": [
-      143
-    ],
-    "retrieved_ids": [
-      59,
-      142,
-      143
+      282,
+      20,
+      740
     ],
     "recall": 1.0
   },
   {
-    "query": "How many non\u2011cardiovascular deaths occurred in each study arm and what was the hazard ratio for those deaths?",
+    "query": "What are the recommended follow\u2011up actions and rescreening intervals for cervical screening results?",
     "relevant_ids": [
-      754
+      209
     ],
     "retrieved_ids": [
-      754,
-      747,
-      751
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "Which HPV types are most commonly associated with cervical cancer?",
-    "relevant_ids": [
-      105
-    ],
-    "retrieved_ids": [
-      378,
-      158,
-      151
+      208,
+      174,
+      238
     ],
     "recall": 0.0
   },
   {
-    "query": "Which transporters are involved in the absorption and clearance of atorvastatin?",
+    "query": "What is the phone number for the program specialist at Fernald?",
     "relevant_ids": [
-      690
+      1117
     ],
     "retrieved_ids": [
-      690,
-      668,
-      678
+      541,
+      1098,
+      1117
     ],
     "recall": 1.0
   },
   {
-    "query": "What are the differences in cardiovascular and non\u2011cardiovascular mortality between patients taking 80\u202fmg versus 10\u202fmg of Lipitor?",
+    "query": "After a positive HPV DNA test in women living with HIV, what triage tests does WHO recommend?",
     "relevant_ids": [
-      758
+      177
     ],
     "retrieved_ids": [
-      718,
-      741,
-      758
+      81,
+      177,
+      168
     ],
     "recall": 1.0
   },
   {
-    "query": "Is Lipitor 80\u202fmg associated with a higher risk of hemorrhagic stroke in patients who have recently had one?",
+    "query": "What does NIH stand for?",
     "relevant_ids": [
-      557
+      858
     ],
     "retrieved_ids": [
       560,
-      585,
-      526
+      858,
+      746
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the recommended triage strategy for women who test positive for high\u2011risk (cHPV) types to reduce loss to follow\u2011up?",
+    "relevant_ids": [
+      62
+    ],
+    "retrieved_ids": [
+      242,
+      174,
+      62
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "In a high\u2011follow\u2011up capacity setting, which HPV genotypes should be treated with ablative therapy and which should be triaged according to WHO recommendations?",
+    "relevant_ids": [
+      58
+    ],
+    "retrieved_ids": [
+      57,
+      58,
+      169
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the controversy surrounding the distinction between clinical guidelines and public health practice guidelines?",
+    "relevant_ids": [
+      441
+    ],
+    "retrieved_ids": [
+      800,
+      441,
+      439
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Why might clinicians choose not to follow certain clinical guidelines?",
+    "relevant_ids": [
+      471
+    ],
+    "retrieved_ids": [
+      439,
+      871,
+      967
     ],
     "recall": 0.0
   },
   {
-    "query": "What strategies can reduce loss to follow\u2011up among women with high\u2011risk pre\u2011cancerous cervical lesions, even if they might lead to some overtreatment?",
+    "query": "Do you discuss possible conflicts among guidelines?",
+    "relevant_ids": [
+      1034
+    ],
+    "retrieved_ids": [
+      1033,
+      1038,
+      1087
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "How do clinicians decide whether an HPV\u2011positive woman should receive ablative or excisional treatment?",
+    "relevant_ids": [
+      51
+    ],
+    "retrieved_ids": [
+      162,
+      51,
+      212
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How often did the CDC Guidelines Methodology Working Group meet while drafting the guideline guide?",
+    "relevant_ids": [
+      402
+    ],
+    "retrieved_ids": [
+      392,
+      402,
+      746
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What does ACIP stand for?",
+    "relevant_ids": [
+      853
+    ],
+    "retrieved_ids": [
+      745,
+      451,
+      524
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What factors are considered when developing and evaluating clinical guideline documents?",
+    "relevant_ids": [
+      445
+    ],
+    "retrieved_ids": [
+      1055,
+      909,
+      903
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "How should a dual review be conducted, and what roles do junior staff and experts play in the process?",
+    "relevant_ids": [
+      926
+    ],
+    "retrieved_ids": [
+      594,
+      740,
+      926
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How does the Agency for Health Care Policy and Research develop its clinical guidelines and evaluate the strength of the supporting evidence?",
+    "relevant_ids": [
+      564
+    ],
+    "retrieved_ids": [
+      1000,
+      818,
+      564
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the current recommendations for using HPV DNA genotyping in cervical cancer screening?",
+    "relevant_ids": [
+      164
+    ],
+    "retrieved_ids": [
+      177,
+      164,
+      158
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Who are the current leaders of the CDC and what positions do they hold?",
+    "relevant_ids": [
+      321
+    ],
+    "retrieved_ids": [
+      665,
+      578,
+      331
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What do the acronyms OGC, OMAR, OPPE, OTA, PEA, and PHPPO stand for?",
+    "relevant_ids": [
+      859
+    ],
+    "retrieved_ids": [
+      8,
+      859,
+      397
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the benefits and risks of hormone replacement therapy in older, non\u2011white women, including its impact on fracture risk, the appropriate duration of treatment, and the effect of adding progestins?",
+    "relevant_ids": [
+      691
+    ],
+    "retrieved_ids": [
+      688,
+      690,
+      691
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which patients in the Americas region have received the treatment?",
+    "relevant_ids": [
+      313
+    ],
+    "retrieved_ids": [
+      313,
+      315,
+      966
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Do CDC guidelines follow a standard format, and how is their effectiveness measured?",
+    "relevant_ids": [
+      434
+    ],
+    "retrieved_ids": [
+      434,
+      356,
+      358
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What research gaps did the CDC identify in its 1994 workshop on waterborne cryptosporidiosis?",
+    "relevant_ids": [
+      684
+    ],
+    "retrieved_ids": [
+      680,
+      684,
+      685
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the recommended triage strategy for cervical screening results 1a\u20111d using cytology or dual\u2011stain cytology?",
+    "relevant_ids": [
+      188
+    ],
+    "retrieved_ids": [
+      81,
+      130,
+      188
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How can we improve the identification of children who are due for vaccines so that we can order them?",
+    "relevant_ids": [
+      777
+    ],
+    "retrieved_ids": [
+      776,
+      777,
+      828
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which HPV types are treated immediately versus triaged with VIA in the extended HPV DNA genotyping algorithm?",
+    "relevant_ids": [
+      198
+    ],
+    "retrieved_ids": [
+      179,
+      180,
+      198
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which organizations and agencies are involved in reviewing draft guidelines to ensure scientific validity and address legal considerations?",
+    "relevant_ids": [
+      734
+    ],
+    "retrieved_ids": [
+      741,
+      734,
+      743
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How can I plan and schedule the writing of a clinical guideline to ensure it is effective and well\u2011reviewed?",
+    "relevant_ids": [
+      703
+    ],
+    "retrieved_ids": [
+      743,
+      1046,
+      703
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What was the methodologist\u2019s most important role in determining the scope of the guidelines?",
+    "relevant_ids": [
+      536
+    ],
+    "retrieved_ids": [
+      536,
+      537,
+      873
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "According to WHO guidelines, how should women who test positive for HPV be managed in cervical cancer screening?",
+    "relevant_ids": [
+      85
+    ],
+    "retrieved_ids": [
+      81,
+      177,
+      219
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "Will the handbook approach generate specific answers to each evaluation question?",
+    "relevant_ids": [
+      936
+    ],
+    "retrieved_ids": [
+      936,
+      937,
+      964
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Who are the current members of the CDC Advisory Committee on the Prevention of HIV Infection and the National Vaccine Advisory Committee?",
+    "relevant_ids": [
+      1098
+    ],
+    "retrieved_ids": [
+      1097,
+      1098,
+      451
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Where can I find the references for this article?",
+    "relevant_ids": [
+      255
+    ],
+    "retrieved_ids": [
+      930,
+      1045,
+      255
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is a key principle of continuous quality improvement for public health guidelines?",
+    "relevant_ids": [
+      774
+    ],
+    "retrieved_ids": [
+      710,
+      774,
+      855
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Did the external peer review lead to any substantive changes in the guideline recommendations?",
+    "relevant_ids": [
+      157
+    ],
+    "retrieved_ids": [
+      360,
+      282,
+      157
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What has caused doubts about the validity of some reviews?",
+    "relevant_ids": [
+      594
+    ],
+    "retrieved_ids": [
+      594,
+      734,
+      743
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the maximum time allowed for ATSDR to complete peer review of its research studies before reporting or adopting them?",
+    "relevant_ids": [
+      739
+    ],
+    "retrieved_ids": [
+      739,
+      740,
+      699
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the title of this section?",
+    "relevant_ids": [
+      389
+    ],
+    "retrieved_ids": [
+      1113,
+      338,
+      437
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What adverse events can occur as a direct consequence of treating cervical pre\u2011cancer lesions?",
+    "relevant_ids": [
+      138
+    ],
+    "retrieved_ids": [
+      241,
+      138,
+      66
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What does \u201climited genotyping\u201d mean in the context of HPV testing for cervical cancer screening?",
     "relevant_ids": [
       90
     ],
     "retrieved_ids": [
-      256,
-      90,
-      245
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "Does taking cyclosporine or gemfibrozil together with Lipitor increase the risk of rhabdomyolysis?",
-    "relevant_ids": [
-      603
-    ],
-    "retrieved_ids": [
-      545,
-      602,
-      603
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "Which individuals are listed under the WHO Africa region, and what institutions and countries are they associated with?",
-    "relevant_ids": [
-      431
-    ],
-    "retrieved_ids": [
-      495,
-      437,
-      431
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "Which professionals and their respective institutions are mentioned in the passage?",
-    "relevant_ids": [
-      33
-    ],
-    "retrieved_ids": [
-      208,
-      180,
-      462
+      98,
+      164,
+      158
     ],
     "recall": 0.0
   },
   {
-    "query": "Where can I find the WHO guideline on using mRNA tests for HPV in cervical cancer screening?",
+    "query": "What administrative steps need to be planned when setting up a new guideline development project?",
     "relevant_ids": [
-      96
+      461
     ],
     "retrieved_ids": [
-      96,
-      411,
-      55
+      444,
+      461,
+      463
     ],
     "recall": 1.0
   },
   {
-    "query": "Did the GDG reach consensus on all recommendations, or did they rely on a majority vote?",
+    "query": "How are studies classified by quality of evidence when evaluating the effectiveness of a medical intervention?",
     "relevant_ids": [
-      224
+      586
     ],
     "retrieved_ids": [
-      224,
-      174,
-      223
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "Do HPV genotyping tests give specific type information or just a positive/negative result?",
-    "relevant_ids": [
-      239
-    ],
-    "retrieved_ids": [
-      273,
-      239,
-      143
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "What symptoms should I watch for that might indicate rhabdomyolysis while taking Lipitor?",
-    "relevant_ids": [
-      516
-    ],
-    "retrieved_ids": [
-      515,
-      827,
-      516
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "Which antiviral medication is added to the treatment regimen?",
-    "relevant_ids": [
-      614
-    ],
-    "retrieved_ids": [
-      240,
-      115,
-      606
-    ],
-    "recall": 0.0
-  },
-  {
-    "query": "Which experts from Argentina, Uganda, Brazil, India, Malawi, South Africa, and Zimbabwe are part of the research team?",
-    "relevant_ids": [
-      28
-    ],
-    "retrieved_ids": [
-      432,
-      476,
-      28
-    ],
-    "recall": 1.0
-  },
-  {
-    "query": "What are the severity scores for muscle spasms, myalgia, and insomnia?",
-    "relevant_ids": [
+      568,
+      586,
       573
     ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the different levels of HPV DNA genotyping available, and how should a country choose the appropriate strategy based on its follow\u2011up capacity?",
+    "relevant_ids": [
+      159
+    ],
     "retrieved_ids": [
-      572,
-      573,
-      574
+      48,
+      178,
+      159
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "According to WHO guidelines, how should women who test positive for HPV\u202f16/18 be managed, and what is the recommended triage and treatment approach for those who test positive for other high\u2011risk HPV types?",
+    "relevant_ids": [
+      206
+    ],
+    "retrieved_ids": [
+      169,
+      58,
+      206
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the potential legal, financial, and practice implications of adopting the current quality criteria in nursing?",
+    "relevant_ids": [
+      922
+    ],
+    "retrieved_ids": [
+      921,
+      922,
+      771
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What was the process used to develop the USPHS and IDSA guidelines for preventing opportunistic infections in people with HIV?",
+    "relevant_ids": [
+      746
+    ],
+    "retrieved_ids": [
+      456,
+      458,
+      746
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What actions is the agency taking to ensure its guidelines are science\u2011based, clear, and practical?",
+    "relevant_ids": [
+      328
+    ],
+    "retrieved_ids": [
+      328,
+      387,
+      325
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which risk metrics should guideline developers use to assess the importance of a health problem?",
+    "relevant_ids": [
+      757
+    ],
+    "retrieved_ids": [
+      757,
+      750,
+      719
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What other factors should I consider when evaluating a treatment option?",
+    "relevant_ids": [
+      726
+    ],
+    "retrieved_ids": [
+      700,
+      237,
+      975
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What does the Institute of Medicine say about the attributes that make clinical practice guidelines trustworthy and effective?",
+    "relevant_ids": [
+      423
+    ],
+    "retrieved_ids": [
+      874,
+      877,
+      423
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What percentage of the system is intended for use by practitioners, programs, and cross\u2011institutional systems?",
+    "relevant_ids": [
+      541
+    ],
+    "retrieved_ids": [
+      723,
+      748,
+      541
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the reference for the GRADEpro 2013 guidelines?",
+    "relevant_ids": [
+      142
+    ],
+    "retrieved_ids": [
+      264,
+      157,
+      999
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What points should be considered when selecting panels for a guideline?",
+    "relevant_ids": [
+      346
+    ],
+    "retrieved_ids": [
+      345,
+      346,
+      514
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Did the guideline document include a multidisciplinary approach and address potential biases or conflicts of interest?",
+    "relevant_ids": [
+      1093
+    ],
+    "retrieved_ids": [
+      1059,
+      1093,
+      1086
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Who served as both the director of the Centers for Disease Control and Prevention and the administrator of the Agency for Toxic Substances and Disease Registry?",
+    "relevant_ids": [
+      329
+    ],
+    "retrieved_ids": [
+      329,
+      413,
+      854
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Who developed the guideline, who can I contact for more information, when was it issued, and who assessed it?",
+    "relevant_ids": [
+      942
+    ],
+    "retrieved_ids": [
+      425,
+      942,
+      15
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How can a pediatric clinic use continuous quality improvement strategies to increase its vaccination rates?",
+    "relevant_ids": [
+      776
+    ],
+    "retrieved_ids": [
+      776,
+      777,
+      421
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Why is a persuasive supporting rationale essential for the acceptance and implementation of clinical guidelines?",
+    "relevant_ids": [
+      547
+    ],
+    "retrieved_ids": [
+      704,
+      547,
+      387
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the key steps I should follow to plan and coordinate a patient\u2019s care across multiple providers?",
+    "relevant_ids": [
+      443
+    ],
+    "retrieved_ids": [
+      156,
+      443,
+      444
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How can decision analysis tools such as decision trees and influence diagrams help a medical team evaluate options and support group decision making?",
+    "relevant_ids": [
+      660
+    ],
+    "retrieved_ids": [
+      657,
+      660,
+      661
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the prevalence, odds ratio, relative risk, and p\u2011value for HPV51 and HPV56 in the study?",
+    "relevant_ids": [
+      109
+    ],
+    "retrieved_ids": [
+      105,
+      110,
+      95
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "Why is this page blank?",
+    "relevant_ids": [
+      464
+    ],
+    "retrieved_ids": [
+      696,
+      617,
+      491
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What are the disadvantages of using the Nominal Group Technique for guideline development, and how does the Delphi method address these issues?",
+    "relevant_ids": [
+      642
+    ],
+    "retrieved_ids": [
+      642,
+      483,
+      668
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Where can I find the U.S. Preventive Services Task Force\u2019s guide to clinical preventive services?",
+    "relevant_ids": [
+      816
+    ],
+    "retrieved_ids": [
+      816,
+      420,
+      421
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What steps should guideline developers take after selecting a topic and defining its scope?",
+    "relevant_ids": [
+      543
+    ],
+    "retrieved_ids": [
+      535,
+      501,
+      447
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What are the two recommended strategies for managing women who test positive for HPV in the 2021 guideline?",
+    "relevant_ids": [
+      130
+    ],
+    "retrieved_ids": [
+      88,
+      130,
+      39
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What factors lead the CDC to develop new health guidelines?",
+    "relevant_ids": [
+      426
+    ],
+    "retrieved_ids": [
+      426,
+      411,
+      356
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the main steps involved in the Nominal Group Technique?",
+    "relevant_ids": [
+      640
+    ],
+    "retrieved_ids": [
+      640,
+      842,
+      639
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which committees or groups are responsible for creating CDC guidelines?",
+    "relevant_ids": [
+      429
+    ],
+    "retrieved_ids": [
+      449,
+      435,
+      430
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What are the possible classifications for omitting quantitative information about potential harms or risks?",
+    "relevant_ids": [
+      1021
+    ],
+    "retrieved_ids": [
+      1016,
+      1020,
+      1079
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What are some key references on social diagnosis, meta\u2011analytic methods, quantitative methods in epidemiology, and developing practice guidelines for community health interventions?",
+    "relevant_ids": [
+      806
+    ],
+    "retrieved_ids": [
+      848,
+      806,
+      486
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What should be done to make guideline assessments useful for a wide set of audiences?",
+    "relevant_ids": [
+      935
+    ],
+    "retrieved_ids": [
+      907,
+      846,
+      935
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Who are the researchers from the Cancer Elimination Collaboration at the Sydney School of Public Health?",
+    "relevant_ids": [
+      289
+    ],
+    "retrieved_ids": [
+      289,
+      28,
+      29
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the methodologist\u2019s most important role in preventing scope expansion during the development of a clinical guideline?",
+    "relevant_ids": [
+      537
+    ],
+    "retrieved_ids": [
+      536,
+      537,
+      535
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How does variation in clinical practice affect costs and health outcomes, and can guidelines help reduce inappropriate care?",
+    "relevant_ids": [
+      500
+    ],
+    "retrieved_ids": [
+      867,
+      500,
+      439
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is the phone number for the Advisory Committee on Childhood Lead Poisoning Prevention?",
+    "relevant_ids": [
+      1103
+    ],
+    "retrieved_ids": [
+      1105,
+      1098,
+      1103
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the main categories of approaches that guideline sponsors use to set the scope of a guideline?",
+    "relevant_ids": [
+      533
+    ],
+    "retrieved_ids": [
+      557,
+      533,
+      535
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How should practice guidelines address known exceptions and incorporate patient preferences?",
+    "relevant_ids": [
+      871
+    ],
+    "retrieved_ids": [
+      779,
+      973,
+      871
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Where can I find the references for this article?",
+    "relevant_ids": [
+      813
+    ],
+    "retrieved_ids": [
+      930,
+      1045,
+      255
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What criteria does ATSDR use to select its expert panels, and when are those panels involved in the review process?",
+    "relevant_ids": [
+      740
+    ],
+    "retrieved_ids": [
+      506,
+      740,
+      378
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Who should we consult to get feedback on the scientific accuracy, completeness, and ease of implementation of our draft guidelines?",
+    "relevant_ids": [
+      386
+    ],
+    "retrieved_ids": [
+      386,
+      835,
+      742
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Do the guideline recommendations cover all clinically relevant circumstances?",
+    "relevant_ids": [
+      1043
+    ],
+    "retrieved_ids": [
+      968,
+      1043,
+      868
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What cost\u2011effective treatment and triage strategy is recommended for women who test positive for HPV\u202f16,\u202f18, or\u202f45?",
+    "relevant_ids": [
+      185
+    ],
+    "retrieved_ids": [
+      193,
+      243,
+      189
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What treatments must be available for women who test positive for HPV before a cervical\u2011cancer screening program can begin?",
+    "relevant_ids": [
+      225
+    ],
+    "retrieved_ids": [
+      194,
+      245,
+      206
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What is the heading of the section that discusses updating guidelines?",
+    "relevant_ids": [
+      697
+    ],
+    "retrieved_ids": [
+      697,
+      700,
+      879
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which U.S. department and agencies are responsible for the CDC guidelines on improving quality?",
+    "relevant_ids": [
+      322
+    ],
+    "retrieved_ids": [
+      354,
+      870,
+      863
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "Did the conflicts of interest among the GDG members impede their participation in the GDG proceedings?",
+    "relevant_ids": [
+      125
+    ],
+    "retrieved_ids": [
+      1059,
+      124,
+      125
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How should clinical guidelines balance the strength of evidence with flexibility for individual patient care and practitioner judgment?",
+    "relevant_ids": [
+      779
+    ],
+    "retrieved_ids": [
+      866,
+      779,
+      439
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Does the guideline document describe the patient populations to which the guidelines are meant to apply?",
+    "relevant_ids": [
+      954
+    ],
+    "retrieved_ids": [
+      969,
+      954,
+      967
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What aspects should be considered when assessing the quantitative information on health costs in an economic evaluation?",
+    "relevant_ids": [
+      1083
+    ],
+    "retrieved_ids": [
+      1081,
+      1083,
+      1025
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Could public health professionals\u2019 preconceived preferences bias how they interpret population\u2011based recommendations?",
+    "relevant_ids": [
+      508
+    ],
+    "retrieved_ids": [
+      507,
+      508,
+      471
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Who were the members of the WHO Steering Group for the guideline, and who led the guideline development process?",
+    "relevant_ids": [
+      22
+    ],
+    "retrieved_ids": [
+      21,
+      117,
+      22
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What types of evidence did the guideline development group consider when creating this guideline?",
+    "relevant_ids": [
+      234
+    ],
+    "retrieved_ids": [
+      659,
+      45,
+      15
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What is the name of the center that focuses on chronic disease prevention and health promotion?",
+    "relevant_ids": [
+      1099
+    ],
+    "retrieved_ids": [
+      857,
+      1099,
+      732
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What is a systematic literature review and why is it often the first step in evidence synthesis?",
+    "relevant_ids": [
+      595
+    ],
+    "retrieved_ids": [
+      593,
+      595,
+      699
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "If an organization were created to certify clinical guidelines, how could it use an instrument to identify and correct issues before the guidelines are finalized?",
+    "relevant_ids": [
+      883
+    ],
+    "retrieved_ids": [
+      875,
+      882,
+      883
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Which patients from the Western Pacific region have a status of \u201cDeclared/assessed/approved\u201d?",
+    "relevant_ids": [
+      318
+    ],
+    "retrieved_ids": [
+      317,
+      318,
+      311
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What qualifications are required for assessors who use this assessment instrument?",
+    "relevant_ids": [
+      923
+    ],
+    "retrieved_ids": [
+      891,
+      899,
+      939
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "If I want to reuse a figure from this article in my own presentation, do I need to obtain permission from the copyright holder?",
+    "relevant_ids": [
+      7
+    ],
+    "retrieved_ids": [
+      5,
+      462,
+      7
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Where can I find the general scope of care policies and guidelines sponsored by the Agency for Health Care Policy and Research?",
+    "relevant_ids": [
+      534
+    ],
+    "retrieved_ids": [
+      325,
+      534,
+      949
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Does the guideline provide detailed cost estimates for each major risk group, covering all necessary services and indicating how those services might be added, substituted, or eliminated if the recommendations are followed?",
+    "relevant_ids": [
+      1024
+    ],
+    "retrieved_ids": [
+      1024,
+      1025,
+      1084
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the recommended steps for developing a clinical guideline?",
+    "relevant_ids": [
+      360
+    ],
+    "retrieved_ids": [
+      444,
+      566,
+      559
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "Does the guideline clearly define the health condition it is intended to prevent, detect, or treat?",
+    "relevant_ids": [
+      1039
+    ],
+    "retrieved_ids": [
+      1035,
+      717,
+      1039
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What are the benefits of combining data from multiple studies when evaluating a medical procedure?",
+    "relevant_ids": [
+      606
+    ],
+    "retrieved_ids": [
+      601,
+      610,
+      606
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "What strategies can be used to make a new clinical guideline more credible and appealing to clinicians, patients, and other stakeholders?",
+    "relevant_ids": [
+      764
+    ],
+    "retrieved_ids": [
+      704,
+      753,
+      387
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "How does the CDC ensure that its public health guidelines are clear, practical, and evidence\u2011based?",
+    "relevant_ids": [
+      325
+    ],
+    "retrieved_ids": [
+      403,
+      356,
+      325
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "How can I contact the program specialist for the Hanford Thyroid Morbidity Study Advisory Committee?",
+    "relevant_ids": [
+      1104
+    ],
+    "retrieved_ids": [
+      1104,
+      1117,
+      1118
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Did the guideline make sure its major recommendations are supported by strong scientific evidence and also review other existing guidelines?",
+    "relevant_ids": [
+      1086
+    ],
+    "retrieved_ids": [
+      698,
+      701,
+      1086
+    ],
+    "recall": 1.0
+  },
+  {
+    "query": "Should HPV DNA genotyping be used as part of the screening and management of cervical pre\u2011cancer lesions?",
+    "relevant_ids": [
+      2
+    ],
+    "retrieved_ids": [
+      1,
+      177,
+      164
+    ],
+    "recall": 0.0
+  },
+  {
+    "query": "What guidance does the GDG recommend for programs on interpreting and assessing follow\u2011up and treatment capacity for pre\u2011cancerous lesions?",
+    "relevant_ids": [
+      247
+    ],
+    "retrieved_ids": [
+      172,
+      166,
+      247
     ],
     "recall": 1.0
   }
