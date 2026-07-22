@@ -6,6 +6,8 @@ docker/env/.env.grafana
 docker/env/.env.postgres-exporter
 docker/env/*.env
 **/.env
+
+# Exception: DO track the .example files (no real secrets inside them)
 !docker/env/*.example
 
 # Python
@@ -14,8 +16,8 @@ __pycache__/
 *$py.class
 *.egg-info/
 .venv/
-venv/
-env/
+/venv/
+/env/
 
 # Alembic (keep migration versions, ignore local db state if any)
 *.sqlite3
