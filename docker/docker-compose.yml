@@ -99,9 +99,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=medical_files
+    env_file:
+      - ./env/.env.postgres
     networks:
       - backend
     restart: always 

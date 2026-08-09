@@ -28,7 +28,7 @@ def get_agent_tools(embedding_service, vector_db):
     async def web_tool(query:str, limit: int = 3):
         """Search the web for current medical information not found internally."""
         search_client = AsyncTavilyClient(api_key=get_settings().TAVILY_KEY)
-        response = search_client.search(query, max_results=limit)
+        response = await search_client.search(query, max_results=limit)
 
         if not response:
             return "No relevant web results found."

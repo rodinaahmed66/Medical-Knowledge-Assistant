@@ -43,15 +43,19 @@ async def upload(request:Request,
             status_code=status.HTTP_400_BAD_REQUEST,
             content={"signal": result}
         )
-
-    file_path= data_controller.save(file)  
-    process_controller=ProcessController(file_id=file_id,file_path=file_path)
     
+
     if await file_model.file_exists(file_id):
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={"signal": "file already exist"}
         )
+
+
+
+    file_path= data_controller.save(file)  
+    process_controller=ProcessController(file_id=file_id,file_path=file_path)
+    
 
     try:
         chunks=await process_controller.chunk_it(
@@ -72,12 +76,23 @@ async def upload(request:Request,
         content={"signal": ProcessSignal.PARSE_FAILED.value, "error": str(e)}
     )
     
-    await file_model.create_file(
-        file_id=file_id,
-        filename=file.filename,
-        file_type=file.content_type,
-        
-    )
+
+    existing_file = await file_model.get_file_by_id(file_id)
+    if existing_file is None:
+        await file_model.create_file(
+            file_id=file_id,
+            filename=file.filename,
+            file_type=file.content_type,
+            status="pending",
+        )
+
+    else:
+        await chunk_model.delete_by_file_id(file_id)
+        await request.app.vector_db.delete_by_file_id(
+            collection_name=app_settings.QDRANT_COLLECTION_NAME,
+            file_id=file_id,
+        )
+        await file_model.update_status(file_id, "pending")
 
     chunk_records=await chunk_model.insert_chunks(
             file_id=file_id,
@@ -93,6 +108,7 @@ async def upload(request:Request,
         )
 
     if not vectors:
+        await file_model.update_status(file_id, "failed")
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"signal": "VECTORS_INDEX_FAILED", "error": "Embedding model failed to process batch."}
@@ -103,6 +119,7 @@ async def upload(request:Request,
         await request.app.vector_db.insert(
                 collection_name=app_settings.QDRANT_COLLECTION_NAME,
                 texts=texts,
+                file_id=file_id,
                 vectors=vectors,
                 metadata=metadata,
                 record_ids=ids
@@ -110,11 +127,17 @@ async def upload(request:Request,
         
 
     except Exception as qdrant_error:
+        
+        await file_model.update_status(file_id, "failed")
         print(f"Error during Qdrant ingestion: {str(qdrant_error)}")
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"signal": "VECTORS_INDEX_FAILED", "error": str(qdrant_error)}
         )
+    
+
+    await file_model.update_status(file_id, "indexed")  
+
 
     return JSONResponse(content={
         "signal": ProcessSignal.PROCESS_SUCCESS.value,
