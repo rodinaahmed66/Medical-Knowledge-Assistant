@@ -44,6 +44,7 @@ class Vector_DB_Model:
             )
 
     async def insert(self, collection_name: str,
+               file_id: str,
                texts: list,
                vectors: list,
                metadata: list = None,
@@ -75,7 +76,8 @@ class Vector_DB_Model:
                         },
                     payload={
                         "text": batch_texts[x],
-                        "metadata": batch_metadata[x]
+                        "metadata": batch_metadata[x],
+                        "file_id": file_id, 
                     }
                 )
                 
@@ -91,7 +93,25 @@ class Vector_DB_Model:
         return True
     
     
+    async def delete_by_file_id(self, collection_name: str, file_id: str):
+        if not self.client:
+            raise RuntimeError("Database client is not connected. Call connect() first.")
 
+        await self.client.delete(
+            collection_name=collection_name,
+            points_selector=models.FilterSelector(
+                filter=models.Filter(
+                    must=[models.FieldCondition(
+                        key="file_id",
+                        match=models.MatchValue(value=file_id)
+                    )]
+                )
+            )
+        )
+
+
+
+    
     async def semantic_search(self, collection_name: str, query_vector: list, limit: int = 5):
         if not self.client:
             

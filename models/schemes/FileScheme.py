@@ -14,3 +14,4 @@ class FileRecord(SQLAlchemyBase):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=True)
 
     chunks = relationship("ChunkRecord", back_populates="file", cascade="all, delete-orphan")
+    status = Column(String, nullable=False, default="pending", server_default="pending")

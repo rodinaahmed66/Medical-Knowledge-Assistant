@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from .BaseModel import BaseModel
 from .schemes.ChunkScheme import ChunkRecord
+from sqlalchemy import select, delete
 
 
 class ChunkModel(BaseModel):
@@ -30,3 +31,12 @@ class ChunkModel(BaseModel):
             .order_by(ChunkRecord.chunk_order)
         )
         return result.scalars().all()
+    
+
+    
+
+    async def delete_by_file_id(self, file_id: str) -> None:
+        await self.db_client.execute(
+            delete(ChunkRecord).where(ChunkRecord.chunk_file_id == file_id)
+        )
+        await self.db_client.commit()
