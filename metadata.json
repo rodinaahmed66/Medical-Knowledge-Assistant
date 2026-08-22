@@ -1,0 +1,8 @@
+{
+  "name": "Medical Knowledge Assistant",
+  "description": "Agentic RAG Medical Document Assistant with document ingestion, hybrid vector search, and web search fallback",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
