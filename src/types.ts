@@ -22,7 +22,9 @@ export interface SearchResult {
   text: string;
   score: number;
   fileId?: string;
+  filename?: string;
   chunkId?: string;
+  chunkIndex?: number;
 }
 
 export interface WebSearchResult {

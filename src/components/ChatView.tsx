@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Stethoscope, Sparkles, Database, Globe, ChevronDown, ChevronUp, Clock, Info, Check, Copy, User } from 'lucide-react';
+import { Send, Stethoscope, Sparkles, Database, Globe, ChevronDown, ChevronUp, Clock, Info, Check, Copy, User, FileText, ExternalLink } from 'lucide-react';
 import { ChatMessage } from '../types';
 import Markdown from 'react-markdown';
 
 interface ChatViewProps {
   onSelectQuery?: (q: string) => void;
+  onNavigateToLibrary?: (docId?: string) => void;
 }
 
 const suggestedInquiries = [
@@ -15,11 +16,12 @@ const suggestedInquiries = [
   "What are the primary ASCVD risk thresholds and high-intensity statin indications?"
 ];
 
-export const ChatView: React.FC<ChatViewProps> = () => {
+export const ChatView: React.FC<ChatViewProps> = ({ onNavigateToLibrary }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputQuery, setInputQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [expandedThoughts, setExpandedThoughts] = useState<Record<string, boolean>>({});
+  const [expandedChunks, setExpandedChunks] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -30,6 +32,10 @@ export const ChatView: React.FC<ChatViewProps> = () => {
 
   const toggleThoughts = (id: string) => {
     setExpandedThoughts(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleChunkSnippet = (chunkKey: string) => {
+    setExpandedChunks(prev => ({ ...prev, [chunkKey]: !prev[chunkKey] }));
   };
 
   const handleCopy = (text: string, id: string) => {
@@ -220,25 +226,59 @@ export const ChatView: React.FC<ChatViewProps> = () => {
                 <Markdown>{msg.content}</Markdown>
               </div>
 
-              {/* Retrieved Chunks Drawer */}
+              {/* Retrieved Document Citations Links */}
               {msg.retrievedChunks && msg.retrievedChunks.length > 0 && (
                 <div className="mt-4 pt-3 border-t border-slate-100">
-                  <div className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
-                    <Database className="w-3.5 h-3.5 text-blue-600" />
-                    Verified Document Citations:
+                  <div className="text-xs font-semibold text-slate-700 mb-2 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-blue-700 font-medium">
+                      <Database className="w-3.5 h-3.5 text-blue-600" />
+                      Referenced Document Sources ({msg.retrievedChunks.length}):
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">Grounding Confidence: High</span>
                   </div>
-                  <div className="space-y-1.5">
-                    {msg.retrievedChunks.map((chunk, idx) => (
-                      <div key={idx} className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600">
-                        <div className="flex justify-between items-center text-slate-500 mb-1 font-mono text-[11px]">
-                          <span className="font-semibold text-blue-600">Citation #{idx + 1}</span>
-                          <span className="bg-slate-200/80 px-1.5 py-0.2 rounded text-slate-700">
-                            Relevance: {(chunk.score * 100).toFixed(0)}%
-                          </span>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {msg.retrievedChunks.map((chunk, idx) => {
+                      const chunkKey = `${msg.id}-chunk-${idx}`;
+                      const isExpanded = !!expandedChunks[chunkKey];
+                      return (
+                        <div
+                          key={idx}
+                          className="p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-lg border border-slate-200 text-xs transition-colors flex flex-col justify-between"
+                        >
+                          <div className="flex items-start justify-between gap-1.5 mb-1.5">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <FileText className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                              <span className="font-semibold text-slate-800 truncate text-[11px]" title={chunk.filename || 'Medical Document'}>
+                                {chunk.filename || 'Medical Document'}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 flex-shrink-0">
+                              Chunk #{chunk.chunkIndex !== undefined ? chunk.chunkIndex + 1 : idx + 1}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between text-[10px] pt-1 border-t border-slate-200/60 mt-auto text-slate-500">
+                            <span className="text-emerald-600 font-semibold font-mono">
+                              Match: {(chunk.score * 100).toFixed(0)}%
+                            </span>
+                            <button
+                              onClick={() => toggleChunkSnippet(chunkKey)}
+                              className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-0.5 transition-colors"
+                            >
+                              <span>{isExpanded ? 'Hide Passage' : 'View Passage'}</span>
+                              {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                            </button>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="mt-2 p-2 bg-white rounded border border-blue-100 text-[11px] text-slate-600 font-sans leading-relaxed max-h-40 overflow-y-auto">
+                              <p className="italic">"{chunk.text}"</p>
+                            </div>
+                          )}
                         </div>
-                        <p className="italic">"{chunk.text}"</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}

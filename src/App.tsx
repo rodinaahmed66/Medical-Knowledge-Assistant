@@ -3,14 +3,12 @@ import { Header } from './components/Header';
 import { ChatView } from './components/ChatView';
 import { DocumentManager } from './components/DocumentManager';
 import { ApiStatusModal } from './components/ApiStatusModal';
-import { GuidelinesModal } from './components/GuidelinesModal';
 import { DocumentRecord } from './types';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<'consultation' | 'library'>('consultation');
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isGuidelinesOpen, setIsGuidelinesOpen] = useState(false);
 
   const fetchDocuments = async () => {
     try {
@@ -34,13 +32,12 @@ export function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenSettings={() => setIsSettingsOpen(true)}
-        onOpenGuidelinesModal={() => setIsGuidelinesOpen(true)}
         totalDocs={documents.length}
       />
 
       <main className="flex-1">
         {activeTab === 'consultation' && (
-          <ChatView />
+          <ChatView onNavigateToLibrary={() => setActiveTab('library')} />
         )}
 
         {activeTab === 'library' && (
@@ -51,11 +48,6 @@ export function App() {
       <ApiStatusModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-      />
-
-      <GuidelinesModal
-        isOpen={isGuidelinesOpen}
-        onClose={() => setIsGuidelinesOpen(false)}
       />
     </div>
   );

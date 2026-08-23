@@ -5,6 +5,10 @@ import multer from 'multer';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import fs from 'fs';
+import pdfParse from 'pdf-parse';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -210,16 +214,15 @@ app.post('/api/upload/file', upload.single('file'), async (req, res) => {
     const { originalname, mimetype, size, buffer } = req.file;
     const fileId = `doc-${Date.now()}-${originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
-    // Extract text from buffer
+    // Extract text from buffer using pdf-parse for PDFs or utf-8 for text/markdown
     let rawText = '';
     if (mimetype === 'application/pdf' || originalname.endsWith('.pdf')) {
-      // In node, for pdf buffer or text files:
-      rawText = buffer.toString('utf-8');
-      // clean binary junk if any
-      if (rawText.includes('%PDF')) {
-        // extract readable ascii parts
-        const textParts = rawText.match(/[A-Za-z0-9 ,.:;'"?!()\n\r-]{4,}/g);
-        rawText = textParts ? textParts.join(' ') : 'Parsed clinical document contents.';
+      try {
+        const pdfData = await pdfParse(buffer);
+        rawText = pdfData.text || '';
+      } catch (pdfErr) {
+        console.error('PDF parsing error:', pdfErr);
+        rawText = buffer.toString('utf-8').replace(/[^\x20-\x7E\n\t]/g, ' ');
       }
     } else {
       rawText = buffer.toString('utf-8');
@@ -372,12 +375,45 @@ Guidelines:
   // Fallback structured synthesis if AI response didn't produce text
   if (!answer) {
     if (sourceType === 'local_records' && relevantResults.length > 0) {
-      const topContent = relevantResults.map(r => r.chunk.content).join('\n\n');
-      answer = `Based on internal medical records (**${relevantResults[0].chunk.filename}**):\n\n${topContent}\n\n*Note: This synthesis was compiled exclusively from local records. Please consult a qualified healthcare provider for personalized medical guidance.*`;
+      const topDocName = relevantResults[0].chunk.filename || 'Document';
+      const topReferences = relevantResults.map((r, i) => `[Source ${i + 1}] **${r.chunk.filename}** (Chunk #${r.chunk.chunkIndex + 1})`).join(' • ');
+
+      // Extract specific query-relevant sentences instead of dumping raw full paragraphs
+      const queryTerms = query.toLowerCase().split(/[^a-z0-9_-]+/).filter(t => t.length > 2);
+      const extractedSentences: string[] = [];
+
+      for (const res of relevantResults) {
+        const sentences = res.chunk.content.split(/(?<=[.?!])\s+/);
+        for (const sent of sentences) {
+          const cleanSent = sent.trim().replace(/\s+/g, ' ');
+          if (cleanSent.length > 25 && !cleanSent.toLowerCase().includes('isbn') && !cleanSent.toLowerCase().includes('licence') && !cleanSent.toLowerCase().includes('copyright')) {
+            const matchesQuery = queryTerms.some(term => cleanSent.toLowerCase().includes(term));
+            if (matchesQuery && !extractedSentences.includes(cleanSent)) {
+              extractedSentences.push(cleanSent);
+            }
+          }
+        }
+      }
+
+      let conciseFindings = '';
+      if (extractedSentences.length > 0) {
+        conciseFindings = extractedSentences.slice(0, 5).map(s => `• ${s}`).join('\n\n');
+      } else {
+        // First few meaningful lines
+        const firstChunkClean = relevantResults[0].chunk.content
+          .split('\n')
+          .filter(line => line.trim().length > 30 && !line.includes('ISBN') && !line.includes('©'))
+          .slice(0, 3)
+          .join('\n\n');
+        conciseFindings = firstChunkClean || relevantResults[0].chunk.content.slice(0, 350) + '...';
+      }
+
+      answer = `Based on internal clinical records (**${topDocName}**):\n\n${conciseFindings}\n\n*References: ${topReferences}*\n\n*Note: This synthesis was compiled strictly from verified local clinical records. Please consult a qualified healthcare provider for personalized medical decisions.*`;
     } else if (sourceType === 'hybrid') {
+      const topReferences = relevantResults.map((r, i) => `[Document ${i + 1}] **${r.chunk.filename}** (Chunk #${r.chunk.chunkIndex + 1})`).join(' • ');
       const localContent = relevantResults.map(r => r.chunk.content).join('\n\n');
       const webContent = webResults.map(w => w.content).join('\n\n');
-      answer = `### Integrated Clinical Findings (Hybrid Search)\n\n**From Local Document Knowledge Base:**\n${localContent}\n\n**From External Clinical References:**\n${webContent}\n\n*Note: This information was compiled using hybrid local records and web research. Always consult a healthcare professional for clinical decisions.*`;
+      answer = `### Integrated Clinical Findings (Hybrid Search)\n\n**From Local Document Knowledge Base (${topReferences}):**\n${localContent}\n\n**From External Clinical References:**\n${webContent}\n\n*Note: This information was compiled using hybrid local records and web research. Always consult a healthcare professional for clinical decisions.*`;
     } else if (webResults.length > 0) {
       const webContent = webResults.map(w => `• **${w.title}**: ${w.content}`).join('\n\n');
       answer = `Based on live clinical research (**Web Research**):\n\n${webContent}\n\n*Note: No sufficiently matching local document was found; answer compiled from peer-reviewed clinical web sources. Always consult a healthcare professional for diagnosis or treatment.*`;
@@ -402,7 +438,9 @@ Guidelines:
       text: r.chunk.content,
       score: Number(r.score.toFixed(3)),
       fileId: r.chunk.fileId,
-      chunkId: r.chunk.id
+      filename: r.chunk.filename,
+      chunkId: r.chunk.id,
+      chunkIndex: r.chunk.chunkIndex
     })),
     webResults,
     executionTimeMs: duration

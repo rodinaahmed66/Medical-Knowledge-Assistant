@@ -5,7 +5,6 @@ interface HeaderProps {
   activeTab: 'consultation' | 'library';
   setActiveTab: (tab: 'consultation' | 'library') => void;
   onOpenSettings: () => void;
-  onOpenGuidelinesModal: () => void;
   totalDocs: number;
 }
 
@@ -13,7 +12,6 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onOpenSettings,
-  onOpenGuidelinesModal,
   totalDocs
 }) => {
   return (
@@ -75,15 +73,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Controls */}
           <div className="flex items-center gap-2.5">
-            <button
-              id="btn-verified-guidelines"
-              onClick={onOpenGuidelinesModal}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100/80 text-emerald-700 border border-emerald-300 transition-colors"
-            >
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Verified Guidelines</span>
-            </button>
-
             <button
               id="btn-settings-config"
               onClick={onOpenSettings}
