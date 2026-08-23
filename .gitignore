@@ -43,9 +43,3 @@ docker/openlit_data/
 
 # LangSmith / logs
 *.log
-
-
-node_modules/
-dist/
-build/
-.env
