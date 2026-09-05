@@ -128,6 +128,7 @@ async def upload(request:Request,
 
     except Exception as qdrant_error:
         
+        await chunk_model.delete_by_file_id(file_id)
         await file_model.update_status(file_id, "failed")
         print(f"Error during Qdrant ingestion: {str(qdrant_error)}")
         return JSONResponse(
