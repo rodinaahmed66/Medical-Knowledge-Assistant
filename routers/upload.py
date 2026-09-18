@@ -51,6 +51,21 @@ async def upload(request:Request,
             content={"signal": "file already exist"}
         )
 
+    existing_file = await file_model.get_file_by_id(file_id)
+    if existing_file is None:
+        await file_model.create_file(
+            file_id=file_id,
+            filename=file.filename,
+            file_type=file.content_type,
+            status="processing",
+        )
+    else:
+        await chunk_model.delete_by_file_id(file_id)
+        await request.app.vector_db.delete_by_file_id(
+            collection_name=app_settings.QDRANT_COLLECTION_NAME,
+            file_id=file_id,
+        )
+        await file_model.update_status(file_id, "processing")
 
 
     file_path= data_controller.save(file)  
@@ -64,44 +79,24 @@ async def upload(request:Request,
         )
 
         if not chunks:
+            await file_model.update_status(file_id, "failed")
             return JSONResponse(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 content={"signal": ProcessSignal.NO_CHUNKS_PRODUCED.value, "file_id": file_id}
             )
     
     except Exception as e:
-        
+        await file_model.update_status(file_id, "failed")
         return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"signal": ProcessSignal.PARSE_FAILED.value, "error": str(e)}
     )
     
 
-    existing_file = await file_model.get_file_by_id(file_id)
-    if existing_file is None:
-        await file_model.create_file(
-            file_id=file_id,
-            filename=file.filename,
-            file_type=file.content_type,
-            status="pending",
-        )
-
-    else:
-        await chunk_model.delete_by_file_id(file_id)
-        await request.app.vector_db.delete_by_file_id(
-            collection_name=app_settings.QDRANT_COLLECTION_NAME,
-            file_id=file_id,
-        )
-        await file_model.update_status(file_id, "pending")
-
-    chunk_records=await chunk_model.insert_chunks(
-            file_id=file_id,
-            chunks=chunks,
-        )
 
     texts=[chunk.page_content for chunk in chunks]
     metadata=[chunk.metadata if chunk.metadata else {} for chunk in chunks]
-    ids=[record.chunk_id for record in chunk_records]
+    ids=list(range(1, len(chunks) + 1))
     vectors = await asyncio.to_thread(
             request.app.embedding_service.embed_text, 
             texts
@@ -113,7 +108,7 @@ async def upload(request:Request,
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"signal": "VECTORS_INDEX_FAILED", "error": "Embedding model failed to process batch."}
         )
-        
+
     try:
     
         await request.app.vector_db.insert(
@@ -135,6 +130,22 @@ async def upload(request:Request,
             content={"signal": "VECTORS_INDEX_FAILED", "error": str(qdrant_error)}
         )
     
+    try:
+        await chunk_model.insert_chunks(
+            file_id=file_id,
+            chunks=chunks,
+        )
+    except Exception as chunk_error:
+        await request.app.vector_db.delete_by_file_id(
+            collection_name=app_settings.QDRANT_COLLECTION_NAME,
+            file_id=file_id,
+        )
+        await file_model.update_status(file_id, "failed")
+        print(f"Error during chunks insertion: {str(chunk_error)}")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"signal": ProcessSignal.CHUNKS_INSERT_FAILED.value, "error": str(chunk_error)}
+        )
 
     await file_model.update_status(file_id, "indexed")  
 
@@ -144,7 +155,3 @@ async def upload(request:Request,
         "file_id": file_id,
         "chunks_parsed": len(chunks),
     })
-
-    
-
-    
