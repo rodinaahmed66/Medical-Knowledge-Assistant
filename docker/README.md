@@ -1,158 +1,313 @@
 # Docker Guide
 
-This project runs as a multi-container stack via `docker-compose.yml` (FastAPI,
-PostgreSQL, Qdrant, Prometheus, Grafana, and optionally the OpenLIT observability
-stack). This file covers the day-to-day commands for running, stopping, rebuilding,
-and cleaning it up.
+This project runs as a **multi-container stack** using Docker Compose. Each part
+of the project runs in its own isolated "container" (think of it as a small,
+self-contained computer):
 
-All commands below assume you're in the `docker/` directory (where
-`docker-compose.yml` lives):
+- **fastapi** — the main application (the AI Medical Knowledge Assistant API)
+- **postgres** — stores your uploaded documents and metadata
+- **qdrant** — the vector database (stores text chunks for AI search)
+- **prometheus** — collects monitoring metrics
+- **grafana** — dashboards to visualize those metrics
+- **node-exporter** — system metrics collector (used by Prometheus)
+- **postgres-exporter** — Postgres metrics collector (used by Prometheus)
+
+> **Don't know Docker?** You don't need to. The only commands you actually need
+> are the ones in this file. Copy, paste, and press Enter — that's it.
+
+---
+
+## 1. What you need before starting
+
+- **Docker** installed and running. Check with:
+  ```bash
+  docker --version
+  ```
+- The repo cloned on your machine.
+
+All commands below assume you are in the `docker/` folder:
 
 ```bash
 cd docker
 ```
 
-## First-time setup
+---
 
-Copy the example env files and fill in your real API keys/passwords — see the
-main [README](README.md) for what each variable is for:
+## 2. First-time setup (only do this once)
 
-```bash
-cp env/.env.app.example env/.env.app
-cp env/.env.grafana.example env/.env.grafana
-cp env/.env.postgres-exporter.example env/.env.postgres-exporter
-```
+1. Copy the example environment files and fill in your real API keys/passwords:
 
-Then edit each `.env.*` file (not the `.example` ones) with your real values.
-These are gitignored and will never be committed.
+   ```bash
+   cp env/.env.app.example env/.env.app
+   cp env/.env.grafana.example env/.env.grafana
+   cp env/.env.postgres.example env/.env.postgres
+   cp env/.env.postgres-exporter.example env/.env.postgres-exporter
+   ```
 
-## Starting the stack
+2. Open each `.env.*` file **without** the `.example` suffix and fill in the real
+   values. At minimum, add your API keys in `env/.env.app`:
+   - `LLAMA_CLOUD_API_KEY` — for parsing uploaded PDFs/text files
+   - `GROQ_KEY` — for the AI chat/generation model
+   - `JINA_KEY` — for AI embeddings
+   - `TAVILY_KEY` — for web search (if the assistant supports search)
+
+   > The `.env.*` files (without `.example`) are gitignored — your keys will
+   > **never** be committed. Only the `.example` files are committed to the repo.
+
+---
+
+## 3. Start everything
 
 ```bash
 docker compose up -d
 ```
 
-`-d` runs it in the background (detached). Drop `-d` if you want to watch logs
-stream live in your terminal as it starts.
+- `-d` runs everything in the background.
+- **First run takes a few minutes** — it downloads images and builds the app.
+- When you see a "Started" message or your prompt returns, everything is running.
 
-### Rebuild after changing code or dependencies
+### Open the app and dashboards
+
+| What                 | Address                                  |
+| -------------------- | ---------------------------------------- |
+| **Main app (API)**   | http://localhost:8000                    |
+| **API docs (try it)**| http://localhost:8000/docs               |
+| **Grafana**          | http://localhost:3000                    |
+| **Prometheus**       | http://localhost:9090                    |
+
+### API endpoints
+
+Once the app is running, these are the endpoints available on the main API
+(base URL: `http://localhost:8000`):
+
+| Method | Endpoint       | What it does                                            |
+| ------ | -------------- | ------------------------------------------------------- |
+| `POST` | `/upload/file` | Upload a document (PDF/text) — send it as **multipart form-data** (field: `file`)|
+| `POST` | `/chat/ask`    | Ask the assistant a question. Body: `{ "query": "..." }`|
+
+Example (once a file is uploaded):
+
+```bash
+curl -X POST http://localhost:8000/chat/ask \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What is the treatment for this condition?"}'
+```
+
+You can try both interactively in the interactive docs:
+http://localhost:8000/docs
+
+### Rebuild after code changes
 
 If you changed Python code, `requirements.txt`, or the `Dockerfile`, a plain
-`up` won't pick up the changes — you need to rebuild the image:
+`up` won't pick up the changes — rebuild the image:
 
 ```bash
 docker compose up -d --build
 ```
 
-To rebuild only one service (faster than rebuilding everything):
+To rebuild only one service (faster):
 
 ```bash
 docker compose up -d --build fastapi
 ```
 
-## Checking status and logs
+---
+
+## 4. How the services talk to each other (the Docker network)
+
+When you run `docker compose up`, Docker creates a private internal network
+called `backend`, and **every container joins it**. Think of it as a private
+Wi-Fi network inside your machine where only these containers can see each
+other. Inside that network each service is reachable by its **service name**,
+not by an IP address. That is why the app's configuration uses names like
+`postgres` and `qdrant` as hosts instead of `localhost` — `localhost` would not
+work here, because from inside the `fastapi` container, its own `localhost` is
+itself, not the database or the vector store.
+
+### How the services depend on each other
+
+The stack starts in a specific order. Containers that depend on another service
+do **not** start until that service has passed its health check:
+
+- **postgres** and **qdrant** start first on their own.
+- **fastapi** (the main app) only starts after **postgres** and **qdrant** are
+  healthy. The app talks to Postgres to store your uploaded documents and their
+  metadata, and to Qdrant to store the text chunks it creates for AI search.
+- **postgres-exporter** only starts after **postgres** is healthy, because it
+  needs the database up to read its metrics.
+- **grafana** only starts after **prometheus** is up, so it can read the
+  metrics Prometheus collects.
+
+So even though you run one `docker compose up` command, the services start up
+in this order: database and vector store first, then the app and the exporters,
+then the monitoring layer.
+
+### What Prometheus collects and from where
+
+Prometheus is the "metrics collector". It continuously pulls data (every 15
+seconds) from several sources over the internal `backend` network:
+
+- **fastapi** — the app exposes its own metrics at the `/informations` endpoint.
+  These are the most important ones: how many files were uploaded, processed,
+  failed, and how your medical assistant is behaving.
+- **node-exporter** — collects **system** metrics: CPU, memory, disk, and
+  network usage of the host machine.
+- **postgres-exporter** — collects **database** metrics: active connections,
+  queries run, and the status of the Postgres server.
+- **qdrant** — collects **vector database** metrics: how many chunks are
+  stored, and how search operations are performing.
+- **prometheus** itself — collects its own metrics (is it running, is it
+  scraping everything correctly, how many targets are up).
+
+Grafana then reads all of this from Prometheus and draws it as dashboards you
+can open in your browser at http://localhost:3000.
+
+### Who can be reached from outside
+
+Only the services that have a `ports:` entry can be reached from your own
+machine (for example, the app on port `8000`, Grafana on `3000`,
+Prometheus on `9090`). Everything else is private inside the `backend`
+network. But even for the exposed ones, the services **always** talk to each
+other over the private network using their service names, and not through the
+public ports.
+
+---
+
+## 5. See how things are doing (status & logs)
 
 ```bash
-docker compose ps                 # see which containers are running/healthy
-docker compose logs -f fastapi    # follow logs for one service live
-docker compose logs -f            # follow logs for all services
-docker compose logs --tail=100 fastapi   # last 100 lines only, no follow
+docker compose ps                          # which containers are running/healthy
+docker compose logs -f                     # watch logs from all services live
+docker compose logs -f fastapi             # watch logs from one service only
+docker compose logs --tail=100 fastapi     # last 100 lines, then stop
 ```
 
-## Stopping the stack
+Leave a log window running with `-f` if you want to see what the app is doing.
+Press `Ctrl+C` to stop following logs (this does **not** stop the containers).
+
+---
+
+## 6. Stop / remove everything
+
+| Command                     | What it does                                       | Data safe? |
+| --------------------------- | -------------------------------------------------- | ---------- |
+| `docker compose stop`       | Pauses containers, keeps them ready to restart     | ✅ Yes     |
+| `docker compose restart`    | Stops then starts again (use after config changes) | ✅ Yes     |
+| `docker compose down`       | Removes containers (start fresh with `up`)         | ✅ Yes     |
+| `docker compose down -v`    | Removes containers **AND deletes all stored data** | ❌ No      |
+
+- **To stop** (containers keep their data):
+  ```bash
+  docker compose stop
+  ```
+- **To start again** after a `stop`:
+  ```bash
+  docker compose start
+  ```
+- **To fully start over** (fresh containers, same data):
+  ```bash
+  docker compose down
+  docker compose up -d
+  ```
+- **To stop one service only**:
+  ```bash
+  docker compose stop fastapi
+  docker compose restart fastapi
+  ```
+
+---
+
+## 7. Wipe ALL data (careful — destructive)
+
+Your uploaded files, chunks, and dashboards live in "named volumes". They survive
+`stop` and `down`. If you want to start the whole project from scratch:
 
 ```bash
-docker compose stop        # stops containers, keeps them (and their data) intact
-docker compose down        # stops AND removes containers (but keeps named volumes/data)
-```
-
-`stop` is the safer everyday command — containers stay ready to restart instantly
-with `docker compose start`. `down` removes the containers themselves (they get
-recreated fresh next `up`), but your data survives either way, because it lives in
-named volumes, not inside the containers.
-
-## Restarting a single service
-
-Useful after fixing a config issue without tearing down everything:
-
-```bash
-docker compose restart fastapi
-```
-
-## Wiping data (careful — destructive)
-
-Named volumes (`postgres_data`, `qdrant_data`, `prometheus_data`, `grafana_data`,
-etc.) persist your data across `down`/`up` cycles. To actually delete stored data
-(e.g. to start the vector DB or Postgres completely fresh):
-
-```bash
-# Remove containers AND all named volumes defined in this compose file
 docker compose down -v
+docker compose up -d
 ```
 
-To wipe just one volume without touching the others:
+To delete just one volume (e.g. only the vector database):
 
 ```bash
-docker compose down                     # stop and remove containers first
-docker volume ls                        # find the exact volume name, e.g. docker_qdrant_data
-docker volume rm docker_qdrant_data      # remove just that one
-docker compose up -d                    # containers recreate a fresh empty volume
+docker compose down
+docker volume ls                  # find the exact name, e.g. docker_qdrant_data
+docker volume rm docker_qdrant_data
+docker compose up -d
 ```
 
-**This is what you want when**: you changed `CHUNK_SIZE`/`OVERLAP_SIZE` and need
-to re-upload documents from scratch, since old chunks in Postgres/Qdrant won't
-match the new chunking config.
+> **Wipe when:** you changed `CHUNK_SIZE` / `OVERLAP_SIZE` in `env/.env.app`.
+> Old chunks won't match the new settings, so re-upload your documents after
+> wiping.
 
-## Getting a shell inside a running container
+---
 
-Useful for debugging, checking installed packages, or inspecting files:
+## 8. Get inside a container (for debugging)
 
 ```bash
-docker exec -it fastapi bash
-docker exec -it postgres psql -U postgres -d medical_files
+docker exec -it fastapi bash                 # shell inside the app container
+docker exec -it postgres psql -U postgres -d medical_files   # database shell
 ```
 
-## Checking disk usage
+Type `exit` to leave.
 
-Docker images, containers, and volumes can quietly eat disk space over time,
-especially on a constrained environment like Cloud Shell:
+---
+
+## 9. Check disk usage & clean up
+
+Docker quietly fills your disk over time:
 
 ```bash
-docker system df              # overview: images/containers/volumes size
-docker system prune           # remove unused (stopped) containers, dangling images, unused networks
-docker system prune -a        # more aggressive: also removes unused images not tied to any container
-docker volume prune           # remove volumes not attached to any container (careful — this is destructive)
+docker system df          # overview of used space
+docker system prune       # remove stopped containers & dangling images (safe)
+docker system prune -a    # also remove unused images (keep only what's running)
+docker volume prune       # remove unused volumes (careful — deletes data)
 ```
 
-## Common troubleshooting
+---
 
-**A service won't start / keeps restarting:**
+## 10. Troubleshooting
+
+**A service won't start / keeps restarting**
 ```bash
 docker compose logs <service_name>
 ```
-Almost always shows the actual error (missing env var, failed migration,
-connection refused to a dependency that isn't healthy yet).
+The real error (missing env var, failed database connection, etc.) will be here.
 
-**Code changes don't seem to apply:**
-You likely forgot `--build`. Docker caches image layers, so a plain `up`
-reuses the old image if the Dockerfile/compose file didn't change.
+**Code changes don't seem to apply**
+You forgot `--build`. Docker reuses the old image on a plain `up`.
 
-**"port is already allocated":**
-Something else (maybe a previous run, or another project) is using that port.
+**"port is already allocated"**
+Something else is using that port:
 ```bash
-docker compose down            # release ports held by this project's containers
+docker compose down
 ```
-Or check what's using it directly:
+Or check what's holding it:
 ```bash
 sudo lsof -i :8000
 ```
 
-**Fresh environment (e.g. new Cloud Shell session) and nothing works:**
-Cloud Shell doesn't keep Docker containers running between sessions. Every new
-session, you need to start the stack again:
+**Fresh environment (e.g. new Cloud Shell session) and nothing works**
+Cloud Shell doesn't keep containers running between sessions. Start the stack
+again each session — your data in named volumes is still there as long as your
+`$HOME` wasn't reset:
 ```bash
 cd docker
 docker compose up -d
 ```
-Your data in named volumes persists as long as your Cloud Shell `$HOME` isn't
-reset, but the containers themselves need to be started fresh each time.
+
+---
+
+## Quick reference (copy-paste cheat sheet)
+
+```bash
+cd docker                                  # go to docker folder
+docker compose up -d --build               # start everything (use --build after code changes)
+docker compose ps                          # check status
+docker compose logs -f                     # watch logs
+docker compose stop                        # pause everything (keeps data)
+docker compose start                       # resume after stop
+docker compose restart fastapi             # restart one service
+docker compose down                        # remove containers (keeps data)
+docker compose down -v                     # remove containers AND data (destructive)
+```
