@@ -31,6 +31,8 @@ _REQUIRED_ENV = {
     "GENERATION_DEFAULT_MAX_TOKENS": "1000",
     "GENERATION_DEFAULT_TEMPERATURE": "0.1",
     "AGENT_TEMPERATURE": "0.1",
+    "JUDGE_MODEL_ID": "test-judge-model",
+    "THRESHOLD_FAITH": "0.7",
     "QDRANT_DB_METHOD": "Cosine",
     "QDRANT_DB_PATH": "http://localhost:6333",
     "QDRANT_COLLECTION_NAME": "test_collection",
