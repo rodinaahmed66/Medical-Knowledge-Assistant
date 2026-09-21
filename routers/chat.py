@@ -1,6 +1,7 @@
 from fastapi import APIRouter,Depends,status,Request
 from services.AgentService import AgentService
 from fastapi.responses import JSONResponse
+from services.AnswerEvaluate import FaithfulnessJudge
 from .Chat_Request import Chat_Request
 
 chat_router=APIRouter(prefix="/chat")
@@ -17,7 +18,10 @@ async def chat (request:Request,
     )
 
     try:
-        result = await agent_service.answer()
+        result,retrieval_context = await agent_service.answer()
+        faithfulness_judge=FaithfulnessJudge()
+        faithfulness_value,reason=faithfulness_judge.build_test(chat_request.query,result,retrieval_context)
+
 
     except Exception as e:
         return JSONResponse(
@@ -25,4 +29,4 @@ async def chat (request:Request,
             content={"signal": "AGENT_FAILED", "error": str(e)},
         )
         
-    return JSONResponse(content={"signal": "CHAT_SUCCESS", "answer": result})
+    return JSONResponse(content={"signal": "CHAT_SUCCESS", "faithfulness_value":faithfulness_value,"answer": result})

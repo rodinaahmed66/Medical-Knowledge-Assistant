@@ -69,7 +69,8 @@ async def build_eval_set(sample_size: int = None):
 
             eval_set.append({
                 "query": question.strip(),
-                "relevant_ids": [chunk.chunk_id],
+                "relevant_ids": [chunk.chunk_order],
+                "file_id": chunk.chunk_file_id
             })
 
 
