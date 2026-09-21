@@ -38,7 +38,9 @@ class AgentService():
 
     async def answer(self) -> str:
         result = await self.agent.ainvoke({"messages": [("user", self.query)]})
-        return result["messages"][-1].content
+        messages = result["messages"]
+        retrieval_context = [m.content for m in messages if m.type == "tool"]
+        return messages[-1].content,retrieval_context
 
 
 
