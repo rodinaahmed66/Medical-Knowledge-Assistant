@@ -24,20 +24,34 @@ async def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, embedding_serv
             limit=k,
         )
 
-        retrieved_ids = {point.id for point in results}
         relevant_ids = set(item["relevant_ids"])
+        expected_file_id = item.get("file_id")
 
         if not relevant_ids:
             continue
+        
+        retrieved_ids={point.id for point in results}
+        retrieved_file_ids=[(point.payload or {}).get("file_id") for point in results]
+        
+        if expected_file_id is not None:
+            retrieved_pairs = {((point.payload or {}).get("file_id"),point.id) for point in results}
+            expected_pairs = {(expected_file_id,rid) for rid in relevant_ids}
 
-        hit_count = 1 if retrieved_ids & relevant_ids else 0 
+            hit_count = 1 if retrieved_pairs & expected_pairs else 0
+
+        else:
+            hit_count = 1 if retrieved_ids & relevant_ids else 0
+
+
         score = hit_count / len(relevant_ids)
         recalls.append(score)
 
         per_query_results.append({
             "query": item["query"],
+            "file_id": expected_file_id,
             "relevant_ids": list(relevant_ids),
             "retrieved_ids": list(retrieved_ids),
+            "retrieved_file_ids": retrieved_file_ids,
             "recall": score,
         })
 
@@ -70,20 +84,19 @@ async def main():
     # Ensure evaluation folder exists for output logs
     os.makedirs("eval_output", exist_ok=True)
 
-    all_reports = {}
-    for k in [1, 3, 5, 10]:
-        report = await recall_at_k(
-            eval_set=eval_set,
-            vector_db=vector_db,
-            embedding_service=embedding_service,
-            collection_name=settings.QDRANT_COLLECTION_NAME,
-            k=k,
-        )
-        all_reports[f"recall@{k}"] = report["overall_recall"]
-        print(f"Recall@{k}: {report['overall_recall']:.4f}")
+    k = 3
+    report = await recall_at_k(
+        eval_set=eval_set,
+        vector_db=vector_db,
+        embedding_service=embedding_service,
+        collection_name=settings.QDRANT_COLLECTION_NAME,
+        k=k,
+    )
+    all_reports = {f"recall@{k}": report["overall_recall"]}
+    print(f"Recall@{k}: {report['overall_recall']:.4f}")
 
-        with open(f"eval_output/recall_at_{k}_details.json", "w") as f:
-            json.dump(report["per_query"], f, indent=2)
+    with open(f"eval_output/recall_at_{k}_details.json", "w") as f:
+        json.dump(report["per_query"], f, indent=2)
 
     with open("eval_output/recall_summary.json", "w") as f:
         json.dump(all_reports, f, indent=2)
