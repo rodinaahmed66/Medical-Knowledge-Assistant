@@ -31,6 +31,7 @@ class settings(BaseSettings):
     CHAT_MODEL_ID:str
     GENERATION_MODEL_ID:str
     EMBEDDING_MODEL_ID:str
+    JUDGE_MODEL_ID:str
     EMBEDDING_MODEL_SIZE:int
 
 
@@ -38,6 +39,7 @@ class settings(BaseSettings):
     GENERATION_DEFAULT_MAX_TOKENS:int
     GENERATION_DEFAULT_TEMPERATURE:float
     AGENT_TEMPERATURE:float
+    THRESHOLD_FAITH:float
 
     QDRANT_DB_METHOD:str
     QDRANT_DB_PATH:str
