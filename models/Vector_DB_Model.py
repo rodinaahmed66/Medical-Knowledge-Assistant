@@ -49,6 +49,7 @@ class Vector_DB_Model:
                vectors: list,
                metadata: list = None,
                record_ids: list = None,
+               chunk_orders: list= None,
                batch_size: int = 50):
         
         sparse_vectors = await asyncio.to_thread(
@@ -63,6 +64,7 @@ class Vector_DB_Model:
             batch_sparse = sparse_vectors[i:batch_end]
             batch_metadata = metadata[i:batch_end]
             batch_record_ids = record_ids[i:batch_end]
+            batch_chunk_orders = chunk_orders[i:batch_end]
 
             batch_records = [
                 models.PointStruct(
@@ -78,6 +80,7 @@ class Vector_DB_Model:
                         "text": batch_texts[x],
                         "metadata": batch_metadata[x],
                         "file_id": file_id, 
+                        "chunk_order":batch_chunk_orders[x]
                     }
                 )
                 
