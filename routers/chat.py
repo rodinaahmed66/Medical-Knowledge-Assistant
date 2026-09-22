@@ -2,7 +2,10 @@ from fastapi import APIRouter,Depends,status,Request
 from services.AgentService import AgentService
 from fastapi.responses import JSONResponse
 from services.AnswerEvaluate import FaithfulnessJudge
+from utils.metrics import AGENT_RESPONSE_DURATION
 from .Chat_Request import Chat_Request
+import time
+
 
 chat_router=APIRouter(prefix="/chat")
 
@@ -18,7 +21,11 @@ async def chat (request:Request,
     )
 
     try:
+        start_agent_time = time.perf_counter()
         result,retrieval_context = await agent_service.answer()
+        agent_duration = time.perf_counter() - start_agent_time
+        AGENT_RESPONSE_DURATION.observe(agent_duration)
+
         faithfulness_judge=FaithfulnessJudge()
         faithfulness_value,reason=faithfulness_judge.build_test(chat_request.query,result,retrieval_context)
 
