@@ -12,6 +12,13 @@ HTTP_REQUEST_DURATION = Histogram(
     buckets=(0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0, float("inf"))
 )
 
+AGENT_RESPONSE_DURATION = Histogram(
+    "agent_response_duration_seconds",
+    "Time spent inside AgentService.answer() only, excluding the faithfulness judge",
+    buckets=(0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 30.0, 60.0, float("inf"))
+)
+
+
 class PrometheusMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # 1. Start the timer
