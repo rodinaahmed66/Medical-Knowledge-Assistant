@@ -35,6 +35,9 @@ docker/grafana_data/
 docker/clickhouse_data/
 docker/openlit_data/
 
+# opencode (local assistant config, not part of the repo)
+.opencode/
+
 # IDE / OS
 .vscode/
 .idea/
