@@ -1,0 +1,31 @@
+# Version control
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Secrets — critical, don't bake these into the image
+docker/env/
+.env
+*.env
+
+# Local dev / testing artifacts
+.deepeval/
+.opencode/
+eval_output/
+
+# Uploaded files (medical docs) — never bake into image
+data/
+tests/
+requirements-test.txt
+
+# Editor/OS
+.vscode/
+.DS_Store
+
+# Docs (not needed at runtime)
+README.md
