@@ -30,11 +30,11 @@ async def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, embedding_serv
         if not relevant_ids:
             continue
         
-        retrieved_ids={point.id for point in results}
+        retrieved_ids={(point.payload or {}).get("chunk_order") for point in results}
         retrieved_file_ids=[(point.payload or {}).get("file_id") for point in results]
         
         if expected_file_id is not None:
-            retrieved_pairs = {((point.payload or {}).get("file_id"),point.id) for point in results}
+            retrieved_pairs = {((point.payload or {}).get("file_id"),(point.payload or {}).get("chunk_order")) for point in results}
             expected_pairs = {(expected_file_id,rid) for rid in relevant_ids}
 
             hit_count = 1 if retrieved_pairs & expected_pairs else 0

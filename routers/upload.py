@@ -10,6 +10,9 @@ from models.FileModel import FileModel
 from models.ChunkModel import ChunkModel
 from models import ProcessSignal
 import asyncio
+import uuid
+
+
 
 upload_router=APIRouter(prefix="/upload")
 
@@ -96,7 +99,8 @@ async def upload(request:Request,
 
     texts=[chunk.page_content for chunk in chunks]
     metadata=[chunk.metadata if chunk.metadata else {} for chunk in chunks]
-    ids=list(range(1, len(chunks) + 1))
+    ids=[str(uuid.uuid4()) for _ in range(len(chunks))]
+    chunk_orders=list(range(1, len(chunks) + 1))
     vectors = await asyncio.to_thread(
             request.app.embedding_service.embed_text, 
             texts
@@ -117,6 +121,7 @@ async def upload(request:Request,
                 file_id=file_id,
                 vectors=vectors,
                 metadata=metadata,
+                chunk_orders=chunk_orders,
                 record_ids=ids
         )
         
