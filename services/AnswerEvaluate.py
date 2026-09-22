@@ -14,7 +14,7 @@ class FaithfulnessJudge:
             model=self.settings.JUDGE_MODEL_ID,
             base_url=self.settings.GROQ_URL,
             api_key=self.settings.GROQ_KEY,
-            temperature=self.settings.GENERATION_DEFAULT_TEMPERATURE,
+            temperature=self.settings.JUDGE_TEMPERATURE,
         )
 
         self.metric = FaithfulnessMetric(
