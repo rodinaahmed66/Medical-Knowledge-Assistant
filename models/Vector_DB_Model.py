@@ -115,10 +115,13 @@ class Vector_DB_Model:
 
 
     
-    async def semantic_search(self, collection_name: str, query_vector: list, limit: int = 5):
+    async def semantic_search(self, collection_name: str, query_vector: list, limit: int = None):
         if not self.client:
             
             raise RuntimeError("Database client is not connected. Call connect() first.")
+
+        if limit is None:
+            limit = self.settings.RETRIEVAL_K
         
         results = await self.client.search(
             collection_name=collection_name,
@@ -131,10 +134,13 @@ class Vector_DB_Model:
         return results
     
 
-    async def hybrid_search(self, collection_name: str, query: str, query_vector: list, limit: int = 5):
+    async def hybrid_search(self, collection_name: str, query: str, query_vector: list, limit: int = None):
         """Combines dense semantic and sparse keyword searches using RRF."""
         if not self.client:
             raise RuntimeError("Database client is not connected.")
+
+        if limit is None:
+            limit = self.settings.RETRIEVAL_K
         
         query_sparse_raw = await asyncio.to_thread(
             lambda: list(self.sparse_embedding_model.embed([query]))[0]

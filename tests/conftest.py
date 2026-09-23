@@ -37,6 +37,7 @@ _REQUIRED_ENV = {
     "QDRANT_DB_METHOD": "Cosine",
     "QDRANT_DB_PATH": "http://localhost:6333",
     "QDRANT_COLLECTION_NAME": "test_collection",
+    "RETRIEVAL_K": "5",
     "TAVILY_KEY": "test-key",
     "LANGSMITH_TRACING_V2": "false",
     "LANGSMITH_ENDPOINT": "https://example.com",

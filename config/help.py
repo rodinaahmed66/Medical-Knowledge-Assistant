@@ -45,6 +45,7 @@ class settings(BaseSettings):
     QDRANT_DB_METHOD:str
     QDRANT_DB_PATH:str
     QDRANT_COLLECTION_NAME:str
+    RETRIEVAL_K: int
 
     TAVILY_KEY:str
 

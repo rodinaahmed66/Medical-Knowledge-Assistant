@@ -8,9 +8,12 @@ import asyncio
 def get_agent_tools(embedding_service, vector_db):
 
     @tool
-    async def vector_search(query: str, limit: int = 3):
+    async def vector_search(query: str, limit: int = None):
         """Search the internal medical knowledge base for relevant document chunks."""
         
+        if limit is None:
+            limit = get_settings().RETRIEVAL_K
+
         vector_query = await asyncio.to_thread(embedding_service.embed_text, query)
         results = await vector_db.hybrid_search(
             collection_name=get_settings().QDRANT_COLLECTION_NAME,
