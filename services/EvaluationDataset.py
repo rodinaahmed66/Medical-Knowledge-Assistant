@@ -85,6 +85,6 @@ async def build_eval_set(sample_size: int = None):
 
 
 if __name__ == "__main__":
-    asyncio.run(build_eval_set(sample_size=25))
+    asyncio.run(build_eval_set(sample_size=200))
 
     
