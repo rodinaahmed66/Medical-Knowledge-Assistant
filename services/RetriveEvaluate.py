@@ -10,10 +10,13 @@ settings = get_settings()
 
 
 async def recall_at_k(eval_set: list, vector_db: Vector_DB_Model, embedding_service: OpenAIProvider,
-                 collection_name: str, k: int = 3) -> dict:
+                 collection_name: str, k: int = None) -> dict:
                  
     recalls = []
     per_query_results = []
+
+    if k is None:
+        k = settings.RETRIEVAL_K
 
     for item in eval_set:
         query_vector = embedding_service.embed_text(item["query"])
@@ -84,7 +87,7 @@ async def main():
     # Ensure evaluation folder exists for output logs
     os.makedirs("eval_output", exist_ok=True)
 
-    k = 3
+    k = settings.RETRIEVAL_K
     report = await recall_at_k(
         eval_set=eval_set,
         vector_db=vector_db,
