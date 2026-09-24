@@ -36,7 +36,8 @@ docker/clickhouse_data/
 docker/openlit_data/
 
 # opencode (local assistant config, not part of the repo)
-.opencode/
+.opencode/*
+!.opencode/skills/
 
 # IDE / OS
 .vscode/
