@@ -23,7 +23,7 @@ COPY . .
 
 RUN mkdir -p /app/models
 
-COPY /models/alembic.ini  app/models/alembic.ini
+COPY models/alembic.ini /app/models/alembic.ini
 
 COPY docker/entrypoint.sh  /entrypoint.sh
 
