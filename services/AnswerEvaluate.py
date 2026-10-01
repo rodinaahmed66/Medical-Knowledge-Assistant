@@ -20,8 +20,13 @@ class FaithfulnessJudge:
         self.metric = FaithfulnessMetric(
             threshold=self.threshold,
             model=self.judge_model,
-            include_reason=True
+            include_reason=True,
+            # The judge answers "borderline" rather than "no" for claims the
+            # retrieval context does not cover. Left at the default (False) those
+            # verdicts still count as passing, so any hallucination scores 1.0.
+            penalize_ambiguous_claims=True,
         )
+        
 
     def build_test(self, query, actual_output, retrieval_context):
         test_case = LLMTestCase(
