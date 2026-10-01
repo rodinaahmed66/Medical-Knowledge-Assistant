@@ -61,7 +61,7 @@ class OpenAIProvider():
                     max_tokens=max_output_tokens,
                     temperature=temperature
                 )
-                time.sleep(2)
+
             
             except Exception as e:
                 self.logger.error(f"Rate limited")
@@ -104,8 +104,7 @@ class OpenAIProvider():
 
                 
                 all_embeddings.extend([item.embedding for item in response.data])
-                if i + batch_size < len(input_texts):
-                   time.sleep(1.5)
+
 
             return all_embeddings[0] if is_single else all_embeddings
 
