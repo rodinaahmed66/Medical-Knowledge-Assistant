@@ -5,13 +5,27 @@ from sqlalchemy.orm import sessionmaker
 from config.help import get_settings
 from utils.metrics import setup_metrics
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from routers import upload
 from routers import chat
 import os
+import pathlib
 
 
 app=FastAPI()
 setup_metrics(app)
+
+# Only needed when the frontend runs from its own dev server (e.g.
+# http://localhost:5173) against the API on http://localhost:8000. When this
+# app serves the frontend too, everything is same-origin and CORS never applies.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 async def startup_span():
 
@@ -74,3 +88,15 @@ app.on_event("shutdown")(shutdown_span)
 
 app.include_router(upload.upload_router)
 app.include_router(chat.chat_router)
+
+# Mounted last on purpose: the StaticFiles handler only sees paths the routers
+# above did not already claim, so /upload, /chat and /informations keep working
+# while /, /styles.css and /app.js are served from disk.
+FRONTEND_DIR = pathlib.Path(__file__).parent / "frontend"
+
+if FRONTEND_DIR.is_dir():
+    app.mount(
+        "/",
+        StaticFiles(directory=str(FRONTEND_DIR), html=True),
+        name="frontend",
+    )

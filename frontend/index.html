@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Medical Knowledge Assistant</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#/">
+        <span class="brand-mark" aria-hidden="true">✚</span>
+        <span class="brand-text">Medical Knowledge Assistant</span>
+      </a>
+      <nav class="topnav">
+        <a class="nav-link" href="#/" data-route-link="home">Home</a>
+        <a class="nav-link" href="#/upload" data-route-link="upload">Upload</a>
+        <a class="nav-link" href="#/chat" data-route-link="chat">Chat</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="api-chip" id="api-chip" title="Backend base URL">API: —</span>
+        <button class="icon-btn" id="theme-toggle" type="button" title="Toggle light / dark">
+          <span aria-hidden="true">◐</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="app">
+      <!-- ============================ HOME ============================ -->
+      <section class="view" data-view="home">
+        <div class="hero">
+          <p class="eyebrow">Retrieval-Augmented Generation · Hybrid search · Faithfulness scored</p>
+          <h1>Ask your medical documents,<br />or feed the knowledge base.</h1>
+          <p class="hero-sub">
+            Upload clinical PDFs and plain-text guidelines, then chat with an agent that decides on its own
+            whether to search your documents or the live web — every answer is scored for faithfulness.
+          </p>
+        </div>
+
+        <div class="action-grid">
+          <button class="action-card" id="go-upload" type="button">
+            <span class="action-icon" aria-hidden="true">⬆</span>
+            <span class="action-title">Upload Documents</span>
+            <span class="action-desc">
+              Send one or many PDF or text files. Each is parsed, chunked, embedded and indexed for hybrid search.
+            </span>
+            <span class="action-cta">Choose files →</span>
+          </button>
+
+          <button class="action-card" id="go-chat" type="button">
+            <span class="action-icon" aria-hidden="true">✦</span>
+            <span class="action-title">Chat</span>
+            <span class="action-desc">
+              Ask a question in natural language. The agent answers and reports a faithfulness score.
+            </span>
+            <span class="action-cta">Start asking →</span>
+          </button>
+        </div>
+
+        <ul class="feature-list">
+          <li><strong>Hybrid retrieval</strong><span>Dense + BM25 fused with RRF</span></li>
+          <li><strong>Agentic tool use</strong><span>Knowledge base or live web, per query</span></li>
+          <li><strong>Faithfulness scoring</strong><span>LLM judge flags ungrounded answers</span></li>
+        </ul>
+      </section>
+
+      <!-- ============================ UPLOAD ============================ -->
+      <section class="view" data-view="upload" hidden>
+        <div class="view-head">
+          <h2>Upload documents</h2>
+          <p>
+            PDF or plain text, up to 50&nbsp;MB each. Select as many files as you like — they are indexed one at
+            a time, and each one gets its own progress bar and result. Re-uploading a file replaces its previous
+            chunks and vectors.
+          </p>
+        </div>
+
+        <form id="upload-form" class="card">
+          <label class="dropzone" id="dropzone" for="file-input" tabindex="0">
+            <input type="file" id="file-input" name="file" multiple accept=".pdf,.txt,application/pdf,text/plain" hidden />
+            <span class="dropzone-icon" aria-hidden="true">📄</span>
+            <span class="dropzone-title" id="dropzone-title">Drop files here, or click to browse</span>
+            <span class="dropzone-hint" id="dropzone-hint">Accepted: .pdf, .txt · max 50 MB each</span>
+          </label>
+
+          <ul class="filelist" id="file-list" hidden></ul>
+
+          <div class="progress" id="upload-progress" hidden>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <span class="progress-label" id="progress-label">Uploading…</span>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" id="upload-btn" type="submit" disabled>Upload &amp; index</button>
+            <button class="btn btn-ghost" id="clear-btn" type="button" hidden>Clear</button>
+          </div>
+        </form>
+
+        <div class="card" id="upload-result" hidden></div>
+      </section>
+
+      <!-- ============================ CHAT ============================ -->
+      <section class="view" data-view="chat" hidden>
+        <div class="view-head">
+          <h2>Chat with the knowledge base</h2>
+          <p>Answers come back with a faithfulness score: how well the reply is grounded in what was retrieved.</p>
+        </div>
+
+        <div class="chat card">
+          <div class="chat-log" id="chat-log"></div>
+
+          <form class="chat-input" id="chat-form">
+            <textarea
+              id="chat-input"
+              rows="2"
+              placeholder="What is the recommended follow-up for a positive HPV31 result?"
+              autocomplete="off"
+            ></textarea>
+            <button
+              class="btn btn-primary btn-send"
+              id="send-btn"
+              type="submit"
+              title="Send"
+              aria-label="Send"
+            >
+              <span aria-hidden="true">➤</span>
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>FastAPI · LangGraph · Qdrant · Postgres</span>
+      <a href="/informations" target="_blank" rel="noopener">metrics</a>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

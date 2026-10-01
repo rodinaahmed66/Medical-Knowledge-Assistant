@@ -23,6 +23,7 @@ Upload medical PDFs (clinical guidelines, research papers), then ask questions i
 | Observability | **Prometheus + Grafana** | Collects and visualizes request/agent latency over time |
 | Tracing | **LangSmith** | Step-by-step trace of what the agent did on each run — which tool it called, what it retrieved, how long each step took |
 | Migrations | **Alembic** | Versions and applies PostgreSQL schema changes |
+| Frontend | **Vanilla HTML/CSS/JS** | Single-page UI served directly by FastAPI — no npm, no bundler, no build step |
 | CI/CD | **GitHub Actions → GHCR** | Runs tests on every PR; builds and pushes a container image on merge to main |
 
 ## Why These Frameworks?
@@ -53,6 +54,7 @@ Upload medical PDFs (clinical guidelines, research papers), then ask questions i
 - **Retrieval evaluation pipeline** — an LLM generates one realistic question per indexed chunk, then a Recall@k script measures whether hybrid search retrieves the correct source chunk.
 - **Full observability** — request-level latency (Prometheus/Grafana), agent-only latency (isolated via a custom metric), and step-by-step agent tracing (LangSmith).
 - **Idempotent, safe re-uploads** — re-uploading a file cleanly replaces its old chunks and vectors rather than duplicating or colliding with them.
+- **Zero-build web UI** — a single-page frontend (plain HTML/CSS/JS, no npm or bundler) served by FastAPI at `/`. Home, a multi-file upload view with per-file progress, and a chat thread with a colour-coded faithfulness badge. See [`frontend/README.md`](frontend/README.md).
 
 ## Getting Started
 
@@ -80,6 +82,14 @@ Upload medical PDFs (clinical guidelines, research papers), then ask questions i
    docker compose -f docker/docker-compose.yml ps
    ```
 
+4. Open **http://localhost:8000** — the web UI is served by the API itself, nothing extra to start.
+
+> **Long uploads and the Codespaces proxy:** indexing a PDF takes well over a minute (LlamaParse → embeddings → Qdrant). Through the GitHub Codespaces port-forwarding proxy this can return HTTP 408 before the server finishes. To avoid it, serve the frontend locally and point it at the API:
+> ```bash
+> cd frontend && python -m http.server 5173
+> ```
+> then open `http://localhost:5173/?api=http://localhost:8000` from your own machine. CORS is enabled for this.
+
 ### Usage
 
 **Upload a document:**
@@ -95,9 +105,12 @@ curl -X POST http://localhost:8000/chat/ask \
   -d '{"query": "What is the recommended follow-up for a positive HPV31 result?"}'
 ```
 
+**Or use the web UI:** open http://localhost:8000 — Upload page takes one or many files and shows per-file progress and outcomes; Chat page renders answers with a faithfulness badge.
+
 **Service endpoints:**
 | Service | URL |
 |---|---|
+| Web UI | http://localhost:8000 |
 | API | http://localhost:8000 |
 | Metrics (Prometheus format) | http://localhost:8000/informations |
 | Prometheus | http://localhost:9090 |
@@ -165,7 +178,7 @@ Measured via three independent sources — a custom `/informations` Prometheus e
 | Agent-only time (retrieval + generation) | ~1.8–2.0s | Custom `agent_response_duration_seconds` metric, cross-validated against LangSmith (mean 1.98s, p95 2.10s, n=6) |
 | Faithfulness-scoring overhead | ~4.5s (derived) | Total minus agent-only |
 
-**Key finding:** the agent itself is fast — under 2 seconds — and two independent measurement methods (an internal Prometheus histogram and external LangSmith tracing) agree closely, confirming the instrumentation is accurate. The majority of end-to-end latency (~70%) comes from the post-hoc faithfulness check, currently a synchronous call — see *Known Limitations* below.
+**Key finding:** the agent itself is fast — under 2 seconds — and two independent measurement methods (an internal Prometheus histogram and external LangSmith tracing) agree closely, confirming the instrumentation is accurate. The majority of end-to-end latency (~70%) comes from the post-hoc faithfulness check, which is now off the event loop but still awaited before responding — see *Known Limitations* below.
 
 ## Observability
 
@@ -174,13 +187,16 @@ Two latency metrics are tracked separately, to distinguish the agent's own reaso
 - `http_request_duration_seconds{endpoint="/chat/ask"}` — total time a user actually waits, including retrieval, generation, and faithfulness scoring.
 - `agent_response_duration_seconds` — isolates just the LangGraph agent's `answer()` call, cross-validated against independent LangSmith tracing (both converge on ~1.8–2.0s for agent-only latency).
 
-This breakdown surfaced a real finding: of a ~6.5s total response time, only ~2s is the agent itself — the remainder is a synchronous faithfulness-scoring call, currently a known optimization target (see below).
+This breakdown surfaced a real finding: of a ~6.5s total response time, only ~2s is the agent itself. The remainder is the faithfulness-scoring call, which has since been moved off the event loop via `asyncio.to_thread` so it no longer serializes concurrent requests (see below).
 
 ## Known Limitations & Next Steps
 
-- **FaithfulnessJudge is a blocking call** inside an async route — it currently runs synchronously rather than via `asyncio.to_thread`, which can stall other concurrent requests during scoring.
+- **Faithfulness scoring is still on the response path** — the judge runs off the event loop now, but the endpoint still awaits it, so per-request p50 is unchanged. The next win is returning the answer immediately and computing the score asynchronously.
+- **`AGENT_RESPONSE_DURATION` excludes the judge** — the histogram only wraps `agent_service.answer()`, so it will not move when judge work changes. A second histogram for judge duration would be needed to measure that split directly.
 - **Prometheus multi-worker gap** — the API runs with 4 Uvicorn workers and no `PROMETHEUS_MULTIPROC_DIR` configured, so each worker keeps an isolated in-memory metrics registry. A single scrape can miss real traffic recorded by a different worker. Fix: configure multiprocess metric aggregation, or reduce to a single worker for metrics accuracy.
-- **Planned:** input/output guardrails (prompt injection defenses), a frontend, and deployment to a stateful-hosting-friendly platform (Railway, Render, or Fly.io).
+- **`GET /health` returns 404** — something polls it on an interval but no such route is registered. Either add a health route or drop it from the scrape config.
+- **Single-language end to end** — the models are multilingual and `jina-embeddings-v3` handles Arabic retrieval well, but the agent prompt pins answers to English and `DEFAULT_LAN` tells the parser uploads are English. Making the answer language dynamic is the enabling change.
+- **Planned:** deployment to a stateful-hosting-friendly platform (Railway, Render, or Fly.io).
 
 ## Project Structure
 
@@ -188,6 +204,7 @@ This breakdown surfaced a real finding: of a ~6.5s total response time, only ~2s
 ├── config/          # Settings (pydantic-settings)
 ├── controllers/      # Upload validation, PDF parsing/chunking
 ├── docker/           # Compose stack, Dockerfile, entrypoint, Prometheus/Grafana config
+├── frontend/            # Zero-build UI (index.html, styles.css, app.js) — mounted at /
 ├── models/            # SQLAlchemy schemas, Qdrant client wrapper, Alembic migrations
 ├── routers/           # FastAPI route handlers (/upload, /chat)
 ├── services/           # Agent orchestration, LLM providers, evaluation scripts
