@@ -144,8 +144,8 @@ chunk_size=1200
 over_lap=250
 | Metric | Value |
 |---|---|
-| Recall@3 | **0.68** (17/25) |
-| Missed queries | 8 |
+| Recall@3 | **0.68** (17) |
+
 
 
 chunk_size=600
@@ -153,16 +153,23 @@ over_lap=120
 
 | Metric | Value |
 |---|---|
-| Recall@5 | **0.83** (49/50) |
-| Missed queries | 8 |
+| Recall@5 | **0.83** (49) |
+
 
 
 chunk_size=600
 over_lap=120
 | Metric | Value |
 |---|---|
-| Recall@5 | **0.75** (169/200) |
-| Missed queries | 31 |
+| Recall@5 | **0.75** (169) |
+
+
+chunk_size=600
+over_lap=120
+| Metric | Value |
+|---|---|
+| Recall@5 | **0.77** (193) |
+
 
 
 
